@@ -42,3 +42,10 @@ temp/
 
 # Local uploads / generated files
 uploads/
+
+# Backend build
+/backend/dist/
+/backend/coverage/
+
+# TypeScript cache
+*.tsbuildinfo

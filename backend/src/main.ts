@@ -1,16 +1,18 @@
-import { ConfigService } from '@nestjs/config';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { NestFactory } from '@nestjs/core'
+import { AppModule } from './app.module'
+import { getAppConfig } from '@config'
 
-const DEFAULT_PORT = 3000;
+async function bootstrap(): Promise<void> {
+  const app = await NestFactory.create(AppModule)
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const { port } = getAppConfig()
 
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>('app.port') || DEFAULT_PORT;
+  await app.listen(port)
 
-  await app.listen(port);
+  console.log(`Backend is running on http://localhost:${port}`)
 }
 
-bootstrap();
+bootstrap().catch((error: unknown) => {
+  console.error('Failed to start backend:', error)
+  process.exit(1)
+})
