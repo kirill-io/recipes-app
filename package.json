@@ -1,0 +1,18 @@
+{
+  "name": "recipes-app",
+  "version": "1.0.0",
+  "private": true,
+  "repository": "git@github.com:kirill-io/recipes-app.git",
+  "author": "Kirill Begej <fleki679@yandex.ru>",
+  "license": "MIT",
+  "scripts": {
+    "install:back": "yarn --cwd backend install",
+    "dev:back": "yarn --cwd backend start:dev",
+    "start:back": "yarn --cwd backend start",
+    "build:back": "yarn --cwd backend build",
+    "lint:back": "yarn --cwd backend lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
