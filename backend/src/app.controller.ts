@@ -9,4 +9,12 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello()
   }
+
+  @Get('health/database')
+  checkDatabaseConnection(): Promise<{
+    isConnected: boolean
+    result: number
+  }> {
+    return this.appService.checkDatabaseConnection()
+  }
 }
