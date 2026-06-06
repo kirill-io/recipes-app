@@ -6,7 +6,9 @@ import { AppModule } from './app.module'
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule)
 
-  const { port } = getAppConfig()
+  const { port, apiPrefix } = getAppConfig()
+
+  app.setGlobalPrefix(apiPrefix)
 
   await app.listen(port)
 
