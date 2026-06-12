@@ -7,9 +7,9 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 
-@Entity('categories')
-@Index('IDX_categories_slug', ['slug'], { unique: true })
-export class Category {
+@Entity('tags')
+@Index('IDX_tags_slug', ['slug'], { unique: true })
+export class Tag {
   @PrimaryGeneratedColumn()
   id!: number
 
