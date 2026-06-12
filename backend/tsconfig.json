@@ -22,7 +22,8 @@
     "strictBindCallApply": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@config": ["./src/config/index"]
+      "@config": ["./src/config/index"],
+      "@modules/*": ["./src/modules/*"]
     }
   },
   "include": ["src/**/*.ts"],

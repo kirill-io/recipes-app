@@ -2,8 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { configLoaders, getTypeOrmConfig } from '@config'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
+import { CategoriesModule } from '@modules/categories'
 
 @Module({
   imports: [
@@ -18,8 +17,7 @@ import { AppService } from './app.service'
       inject: [ConfigService],
       useFactory: getTypeOrmConfig,
     }),
+    CategoriesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
