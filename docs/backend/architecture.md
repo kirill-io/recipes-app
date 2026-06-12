@@ -551,3 +551,116 @@ backend/src/modules/categories/
   categories.module.ts
 ```
 <!-- FIRST_CATEGORY_MIGRATION_STAGE_END -->
+
+<!-- CATEGORIES_API_SWAGGER_STAGE_START -->
+## Обновление: модуль категорий, seed-данные и Swagger
+
+### Модульная структура backend
+
+Backend развивается по модульному принципу.
+
+Корень `src` содержит только сборочные и инфраструктурные элементы:
+
+- `main.ts` — точка входа приложения;
+- `app.module.ts` — корневой модуль, который собирает приложение;
+- `config` — конфигурация приложения;
+- `database` — TypeORM DataSource, миграции и seed-скрипты;
+- `modules` — бизнес-модули приложения.
+
+Стандартные `AppController` и `AppService`, созданные NestJS при генерации проекта, удалены, так как на текущем этапе они не содержали полезной бизнес-логики.
+
+При необходимости health-check будет добавлен позже отдельным модулем, например `HealthModule`.
+
+### CategoriesModule
+
+Первым полноценным бизнес-модулем стал `CategoriesModule`.
+
+Структура модуля:
+
+```txt
+backend/src/modules/categories/
+  categories.module.ts
+  categories.service.ts
+  categories.controller.ts
+  entities/
+    category.entity.ts
+  index.ts
+```
+
+Ответственность модуля:
+
+- регистрация `Category` через `TypeOrmModule.forFeature`;
+- работа с таблицей `categories` через `Repository<Category>`;
+- получение активных категорий;
+- сортировка категорий;
+- предоставление HTTP API для списка категорий;
+- Swagger-документация первой ручки категорий.
+
+`CategoriesModule` подключается в `AppModule` через `imports`.
+
+Сервис категории регистрируется внутри `CategoriesModule` в `providers`, а не напрямую в `AppModule`.
+
+Контроллер категории регистрируется внутри `CategoriesModule` в `controllers`.
+
+### Алиас `@modules`
+
+Для импорта бизнес-модулей добавлен алиас `@modules`.
+
+Публичный экспорт модуля категорий находится в:
+
+```txt
+backend/src/modules/categories/index.ts
+```
+
+Это позволяет подключать модуль в `AppModule` через публичный API модуля:
+
+```ts
+import { CategoriesModule } from '@modules/categories'
+```
+
+Внутри самого модуля используются относительные импорты.
+
+### Seed-скрипты
+
+Seed-скрипты относятся к database-инфраструктуре и размещаются в папке:
+
+```txt
+backend/src/database/seeds
+```
+
+Их задача — наполнять базу стартовыми данными.
+
+Для категорий seed-скрипт добавляет стартовые значения в таблицу `categories`.
+
+Миграции отвечают за структуру базы данных, а seed-скрипты — за данные.
+
+### Swagger/OpenAPI
+
+Для документации API подключён Swagger/OpenAPI.
+
+Swagger-конфигурация вынесена в отдельный config-раздел:
+
+```txt
+backend/src/config/swagger
+```
+
+Swagger подключается в `main.ts` после установки глобального API-префикса.
+
+Swagger UI доступен с учётом глобального API-префикса:
+
+```txt
+/{apiPrefix}/swagger
+```
+
+Если `apiPrefix=api`, итоговый путь:
+
+```txt
+/api/swagger
+```
+
+Первая задокументированная ручка:
+
+```txt
+GET /{apiPrefix}/categories
+```
+<!-- CATEGORIES_API_SWAGGER_STAGE_END -->

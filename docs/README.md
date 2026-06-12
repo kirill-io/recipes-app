@@ -132,3 +132,50 @@ yarn --cwd backend migration:show
 - подключение `TypeOrmModule.forFeature([Category])`;
 - первый API для получения списка категорий.
 <!-- FIRST_CATEGORY_MIGRATION_STAGE_END -->
+
+<!-- CATEGORIES_API_SWAGGER_STAGE_START -->
+## Обновление: модуль категорий, seed-данные и Swagger
+
+После создания первой сущности `Category` и применения первой миграции добавлен первый полноценный backend-модуль проекта — `CategoriesModule`.
+
+На текущем этапе реализовано:
+
+- создан `CategoriesModule`;
+- создан `CategoriesService`;
+- создан `CategoriesController`;
+- модуль категорий подключён в `AppModule`;
+- добавлена ручка получения активных категорий;
+- добавлен seed-скрипт для стартового наполнения таблицы `categories`;
+- подключён Swagger/OpenAPI для документации API;
+- стандартные `AppController` и `AppService`, созданные NestJS по умолчанию, удалены как лишний стартовый код.
+
+Backend теперь имеет первый рабочий вертикальный слой:
+
+```txt
+PostgreSQL → TypeORM Repository → CategoriesService → CategoriesController → HTTP API
+```
+
+С учётом глобального API-префикса ручка категорий доступна по адресу:
+
+```txt
+GET /{apiPrefix}/categories
+```
+
+Если `apiPrefix=api`, итоговый путь:
+
+```txt
+GET /api/categories
+```
+
+Swagger UI доступен по адресу:
+
+```txt
+/{apiPrefix}/swagger
+```
+
+Если `apiPrefix=api`, итоговый путь:
+
+```txt
+/api/swagger
+```
+<!-- CATEGORIES_API_SWAGGER_STAGE_END -->

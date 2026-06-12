@@ -298,3 +298,58 @@
 - реализовать получение списка категорий через API;
 - позже добавить seed-данные для стартовых категорий.
 <!-- FIRST_CATEGORY_MIGRATION_STAGE_END -->
+
+<!-- CATEGORIES_API_SWAGGER_STAGE_START -->
+## Обновление этапа 2: модуль категорий и стартовое API
+
+Статус этапа: в процессе.
+
+Выполнено после первой миграции:
+
+- создан `CategoriesModule`;
+- создан `CategoriesService`;
+- создан `CategoriesController`;
+- `CategoriesModule` подключён в `AppModule`;
+- реализована ручка получения активных категорий;
+- добавлен seed-скрипт для стартового наполнения категорий;
+- подключён Swagger/OpenAPI для документации API;
+- стандартные `AppController` и `AppService` удалены как лишний стартовый код;
+- подтверждён первый backend-флоу от базы данных до HTTP API.
+
+Текущий рабочий backend-флоу:
+
+```txt
+PostgreSQL → TypeORM → Service → Controller → API
+```
+
+Доступная ручка:
+
+```txt
+GET /{apiPrefix}/categories
+```
+
+Если `apiPrefix=api`:
+
+```txt
+GET /api/categories
+```
+
+Swagger UI:
+
+```txt
+/{apiPrefix}/swagger
+```
+
+Если `apiPrefix=api`:
+
+```txt
+/api/swagger
+```
+
+Следующие шаги:
+
+- проверить и зафиксировать API категорий в документации;
+- добавить документацию по seed-данным категорий;
+- перейти к следующему справочнику: `tags` или `units`;
+- после справочников перейти к проектированию ингредиентов и рецептов.
+<!-- CATEGORIES_API_SWAGGER_STAGE_END -->
