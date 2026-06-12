@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { configLoaders, getTypeOrmConfig } from '@config'
 import { CategoriesModule } from '@modules/categories'
+import { TagsModule } from '@modules/tags'
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CategoriesModule } from '@modules/categories'
       useFactory: getTypeOrmConfig,
     }),
     CategoriesModule,
+    TagsModule,
   ],
 })
 export class AppModule {}
