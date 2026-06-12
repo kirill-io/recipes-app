@@ -445,3 +445,79 @@ GET /{apiPrefix}/categories
 GET /api/categories
 ```
 <!-- CATEGORIES_API_SWAGGER_STAGE_END -->
+
+<!-- TAGS_MIGRATION_SEED_STAGE_START -->
+## Обновление: миграция и seed для тегов
+
+Для справочника тегов добавлена сущность `Tag` и миграция, создающая таблицу `tags`.
+
+Таблица `tags` содержит поля:
+
+- `id`;
+- `name`;
+- `slug`;
+- `description`;
+- `sort_order`;
+- `is_active`;
+- `created_at`;
+- `updated_at`.
+
+Для `slug` создаётся уникальный индекс.
+
+Это нужно, чтобы:
+
+- использовать `slug` как стабильный идентификатор тега;
+- не допускать дубли тегов;
+- безопасно выполнять seed через `upsert`.
+
+Команды для работы с миграциями:
+
+```bash
+yarn --cwd backend migration:generate src/database/migrations/CreateTagsTable
+yarn --cwd backend migration:run
+yarn --cwd backend migration:show
+```
+
+Seed-скрипт расширен наполнением тегов.
+
+Текущий seed выполняет:
+
+- получение репозитория `Category`;
+- `upsert` стартовых категорий по `slug`;
+- получение репозитория `Tag`;
+- `upsert` стартовых тегов по `slug`.
+
+Пример логики:
+
+```ts
+await categoriesRepository.upsert(categoriesSeedData, ['slug'])
+await tagsRepository.upsert(tagsSeedData, ['slug'])
+```
+
+Seed можно запускать повторно. Благодаря `upsert` и уникальному индексу по `slug` повторный запуск не создаёт дубли, а обновляет существующие записи.
+
+Команда запуска seed:
+
+```bash
+yarn --cwd backend seed
+```
+
+После применения миграции и запуска seed в базе должны быть заполнены справочники:
+
+- `categories`;
+- `tags`.
+
+Публичные ручки справочников после seed:
+
+```txt
+GET /{apiPrefix}/categories
+GET /{apiPrefix}/tags
+```
+
+Если `apiPrefix=api`:
+
+```txt
+GET /api/categories
+GET /api/tags
+```
+<!-- TAGS_MIGRATION_SEED_STAGE_END -->
