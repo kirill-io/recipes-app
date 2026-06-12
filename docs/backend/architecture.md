@@ -504,3 +504,50 @@ Done
 
 Это означает, что TypeORM CLI смог открыть `data-source.ts`, загрузить env-переменные и выполнить команду без ошибки.
 <!-- TYPEORM_DATASOURCE_STAGE_END -->
+
+<!-- FIRST_CATEGORY_MIGRATION_STAGE_START -->
+## Первая бизнес-сущность и модульная структура
+
+В backend начато формирование бизнес-слоя приложения через папку `src/modules`.
+
+Текущая структура для первой сущности:
+
+```txt
+backend/src/modules/categories/entities/category.entity.ts
+```
+
+Сущность `Category` хранится внутри будущего модуля `categories`, а не в папке `src/database`, потому что она относится к предметной области приложения, а не к инфраструктуре базы данных.
+
+Разделение ответственности:
+
+- `src/config` — конфигурация приложения и подключения к базе данных;
+- `src/database` — TypeORM DataSource, миграции и будущие seed-скрипты;
+- `src/modules` — бизнес-модули приложения: категории, рецепты, пользователи, теги, ингредиенты.
+
+Папка `src/database` сохраняет техническую ответственность:
+
+```txt
+backend/src/database/data-source.ts
+backend/src/database/migrations
+```
+
+Entity размещаются внутри соответствующих бизнес-модулей:
+
+```txt
+backend/src/modules/<module-name>/entities
+```
+
+DTO, service, controller и module также должны размещаться внутри соответствующего бизнес-модуля.
+
+Для категорий следующая планируемая структура:
+
+```txt
+backend/src/modules/categories/
+  dto/
+  entities/
+    category.entity.ts
+  categories.controller.ts
+  categories.service.ts
+  categories.module.ts
+```
+<!-- FIRST_CATEGORY_MIGRATION_STAGE_END -->

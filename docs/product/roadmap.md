@@ -271,3 +271,30 @@
 - проверить таблицы в базе `recipes_app_dev`;
 - после этого перейти к полноценному описанию базовых сущностей проекта.
 <!-- TYPEORM_DATASOURCE_STAGE_END -->
+
+<!-- FIRST_CATEGORY_MIGRATION_STAGE_START -->
+## Обновление этапа 2: база данных и ORM
+
+Статус этапа: в процессе.
+
+Выполнено:
+
+- настроено подключение NestJS к PostgreSQL через TypeORM;
+- создан отдельный TypeORM DataSource для CLI и миграций;
+- настроена папка `backend/src/database/migrations`;
+- создана первая бизнес-сущность `Category`;
+- сущность размещена по модульному принципу в `backend/src/modules/categories/entities`;
+- сгенерирована первая миграция `CreateCategoriesTable`;
+- миграция успешно применена к локальной базе `recipes_app_dev`;
+- в PostgreSQL создана таблица `categories`;
+- подтверждён рабочий цикл `Entity → Migration → PostgreSQL`.
+
+Следующие шаги:
+
+- создать `CategoriesModule`;
+- подключить `TypeOrmModule.forFeature([Category])`;
+- добавить `CategoriesService`;
+- добавить `CategoriesController`;
+- реализовать получение списка категорий через API;
+- позже добавить seed-данные для стартовых категорий.
+<!-- FIRST_CATEGORY_MIGRATION_STAGE_END -->

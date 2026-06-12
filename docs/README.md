@@ -93,3 +93,42 @@ docs/
 ```
 
 Это значит, что в документации заранее фиксируются будущие возможности, но в MVP реализуется только минимальный рабочий функционал.
+
+<!-- FIRST_CATEGORY_MIGRATION_STAGE_START -->
+## Обновление: первая entity и первая миграция
+
+На этапе настройки базы данных создана первая бизнес-сущность проекта:
+
+- `Category`;
+- путь: `backend/src/modules/categories/entities/category.entity.ts`;
+- таблица в PostgreSQL: `categories`.
+
+Для сущности `Category` сгенерирована и применена первая TypeORM-миграция:
+
+- `CreateCategoriesTable`;
+- путь миграций: `backend/src/database/migrations`.
+
+Миграция создаёт таблицу `categories` и уникальный индекс для поля `slug`.
+
+Текущий подтверждённый рабочий цикл:
+
+```txt
+TypeORM entity → migration:generate → migration:run → PostgreSQL
+```
+
+Команда проверки состояния миграций:
+
+```bash
+yarn --cwd backend migration:show
+```
+
+После применения миграции таблица `categories` доступна в базе `recipes_app_dev`.
+
+Следующий шаг — перейти от проверки миграций к созданию полноценного модуля категорий:
+
+- `CategoriesModule`;
+- `CategoriesService`;
+- `CategoriesController`;
+- подключение `TypeOrmModule.forFeature([Category])`;
+- первый API для получения списка категорий.
+<!-- FIRST_CATEGORY_MIGRATION_STAGE_END -->

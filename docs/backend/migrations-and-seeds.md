@@ -327,3 +327,65 @@ yarn --cwd backend migration:show
 
 Первой простой сущностью для проверки можно сделать `CategoryEntity`, потому что категории нужны для структуры рецептов и имеют простую модель данных.
 <!-- TYPEORM_DATASOURCE_STAGE_END -->
+
+<!-- FIRST_CATEGORY_MIGRATION_STAGE_START -->
+## Первая миграция
+
+Создана первая TypeORM entity:
+
+- название: `Category`;
+- путь: `backend/src/modules/categories/entities/category.entity.ts`;
+- таблица в базе данных: `categories`.
+
+Для неё сгенерирована первая миграция:
+
+- название: `CreateCategoriesTable`;
+- путь: `backend/src/database/migrations`.
+
+Миграция создаёт таблицу `categories` со следующими колонками:
+
+- `id`;
+- `name`;
+- `slug`;
+- `description`;
+- `sort_order`;
+- `is_active`;
+- `created_at`;
+- `updated_at`.
+
+Также миграция создаёт уникальный индекс:
+
+```txt
+IDX_categories_slug
+```
+
+Проверка списка миграций выполняется командой:
+
+```bash
+yarn --cwd backend migration:show
+```
+
+Применение миграций выполняется командой:
+
+```bash
+yarn --cwd backend migration:run
+```
+
+После применения первой миграции TypeORM создаёт или использует служебную таблицу `migrations`, в которой хранится история выполненных миграций.
+
+Текущий успешный результат:
+
+```txt
+[X] CreateCategoriesTable...
+```
+
+Это означает, что миграция найдена в исходном коде и уже применена к базе данных.
+
+Важно: `id` записи в таблице `migrations` не обязан быть равен `1`. Если миграция ранее откатывалась и применялась заново, PostgreSQL может выдать следующей записи новый автоинкрементный номер. Это не влияет на работу миграций.
+
+Текущий подтверждённый рабочий цикл:
+
+```txt
+Entity → migration:generate → migration:run → PostgreSQL
+```
+<!-- FIRST_CATEGORY_MIGRATION_STAGE_END -->
