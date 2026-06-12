@@ -448,3 +448,59 @@ recipes/
 5. Создать первые entity.
 6. Создать первую миграцию.
 7. Проверить создание таблиц в базе.
+
+<!-- TYPEORM_DATASOURCE_STAGE_START -->
+## Обновление: TypeORM DataSource для миграций
+
+Для работы приложения и для работы миграций используются разные точки входа.
+
+Подключение базы внутри NestJS-приложения выполняется через:
+
+```ts
+TypeOrmModule.forRootAsync({
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: getTypeOrmConfig,
+})
+```
+
+Это подключение используется при запуске backend-приложения.
+
+Для TypeORM CLI и миграций создан отдельный DataSource:
+
+```txt
+src/database/data-source.ts
+```
+
+Причина разделения:
+
+```txt
+TypeOrmModule.forRootAsync(...) — подключение базы внутри NestJS-приложения
+DataSource — подключение базы для TypeORM CLI, миграций и служебных команд
+```
+
+TypeORM CLI не запускает `main.ts`, `AppModule` и `ConfigModule`, поэтому `data-source.ts` самостоятельно загружает env-файлы через `dotenv`.
+
+Также в `data-source.ts` используются относительные импорты вместо alias `@config`, потому что alias `@config` регистрируется в `main.ts` через `module-alias/register`, а `main.ts` при запуске TypeORM CLI не выполняется.
+
+Правильный импорт для `data-source.ts`:
+
+```ts
+import { databaseConfig } from '../config/database'
+```
+
+Проверка DataSource выполняется командой:
+
+```bash
+yarn --cwd backend migration:show
+```
+
+Текущий результат проверки:
+
+```txt
+injected env from .env.local
+Done
+```
+
+Это означает, что TypeORM CLI смог открыть `data-source.ts`, загрузить env-переменные и выполнить команду без ошибки.
+<!-- TYPEORM_DATASOURCE_STAGE_END -->

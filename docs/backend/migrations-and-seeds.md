@@ -243,3 +243,87 @@ status: ACTIVE
 ```
 
 На текущем этапе команды ещё не финализированы, потому что сначала нужно проверить подключение TypeORM к PostgreSQL и настроить DataSource.
+
+<!-- TYPEORM_DATASOURCE_STAGE_START -->
+## Текущий этап: настройка TypeORM DataSource
+
+На текущем этапе начата настройка инфраструктуры миграций.
+
+Проделано:
+
+- создана папка для database-инфраструктуры;
+- создан файл `src/database/data-source.ts`;
+- добавлена папка `src/database/migrations`;
+- установлен пакет `dotenv` в backend;
+- DataSource настроен на чтение `.env` и `.env.local`;
+- DataSource переиспользует существующий `databaseConfig`;
+- для DataSource используется относительный импорт `../config/database`;
+- исправлена ошибка `Cannot find module '@config'` при запуске TypeORM CLI;
+- добавлены команды миграций в `backend/package.json`;
+- команда `migration:show` успешно выполняется.
+
+### Почему нужен `dotenv`
+
+Обычное NestJS-приложение читает env-файлы через:
+
+```ts
+ConfigModule.forRoot({
+  envFilePath: ['.env.local', '.env'],
+})
+```
+
+Но TypeORM CLI не запускает NestJS-приложение, поэтому `ConfigModule` не выполняется.
+
+Для CLI env-файлы загружаются напрямую в `data-source.ts`:
+
+```ts
+config({ path: '.env' })
+config({ path: '.env.local', override: true })
+```
+
+### Почему не используется `@config`
+
+Alias `@config` работает в обычном backend-запуске, потому что в `main.ts` подключён:
+
+```ts
+import 'module-alias/register'
+```
+
+При запуске миграций `main.ts` не запускается.
+
+Поэтому TypeORM CLI не знает про alias `@config`.
+
+В `data-source.ts` используется относительный импорт:
+
+```ts
+import { databaseConfig } from '../config/database'
+```
+
+### Текущая проверка
+
+Команда:
+
+```bash
+yarn --cwd backend migration:show
+```
+
+успешно завершилась.
+
+Это подтверждает, что:
+
+- TypeORM CLI видит `data-source.ts`;
+- env-файлы загружаются;
+- конфиг базы собирается;
+- команда миграций запускается без ошибки.
+
+### Следующий шаг
+
+Следующий технический шаг:
+
+1. Создать первую entity.
+2. Сгенерировать первую миграцию.
+3. Применить миграцию.
+4. Проверить появление таблиц в pgAdmin.
+
+Первой простой сущностью для проверки можно сделать `CategoryEntity`, потому что категории нужны для структуры рецептов и имеют простую модель данных.
+<!-- TYPEORM_DATASOURCE_STAGE_END -->
