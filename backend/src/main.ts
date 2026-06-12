@@ -1,6 +1,6 @@
 import 'module-alias/register'
 import { NestFactory } from '@nestjs/core'
-import { getAppConfig } from '@config'
+import { getAppConfig, setupSwagger } from '@config'
 import { AppModule } from './app.module'
 
 async function bootstrap(): Promise<void> {
@@ -9,6 +9,8 @@ async function bootstrap(): Promise<void> {
   const { port, apiPrefix } = getAppConfig()
 
   app.setGlobalPrefix(apiPrefix)
+
+  setupSwagger(app)
 
   await app.listen(port)
 
