@@ -336,3 +336,58 @@ Swagger/OpenAPI доступен по адресу:
 http://localhost:5000/api/docs
 ```
 <!-- UNITS_API_STAGE_END -->
+
+<!-- INGREDIENTS_API_STAGE_START -->
+## Ingredients API
+
+### Получить список активных ингредиентов
+
+```txt
+GET /{apiPrefix}/ingredients
+```
+
+Если `apiPrefix=api`, фактический путь:
+
+```txt
+GET /api/ingredients
+```
+
+Ручка возвращает список активных ингредиентов из справочника.
+
+Ручка публичная и в будущем будет использоваться для форм создания и редактирования рецептов.
+
+Сортировка выполняется по:
+
+1. `sortOrder` по возрастанию;
+2. `name` по возрастанию.
+
+Пример элемента ответа:
+
+```json
+{
+  "id": 1,
+  "name": "Куриная грудка",
+  "slug": "kurinaya-grudka",
+  "description": "Филе куриной грудки без кожи.",
+  "caloriesPer100g": 110,
+  "proteinsPer100g": 23.1,
+  "fatsPer100g": 1.2,
+  "carbohydratesPer100g": 0,
+  "sortOrder": 10
+}
+```
+
+Публичный ответ описан через `IngredientResponseDto`.
+
+В ответ не включаются служебные поля:
+
+- `isActive`;
+- `createdAt`;
+- `updatedAt`.
+
+Swagger/OpenAPI доступен по адресу:
+
+```txt
+http://localhost:5000/api/docs
+```
+<!-- INGREDIENTS_API_STAGE_END -->

@@ -268,3 +268,56 @@ http://localhost:5000/api/docs
 ingredient_unit_conversions
 ```
 <!-- UNITS_STAGE_END -->
+
+<!-- INGREDIENTS_STAGE_START -->
+## Обновление: справочник ингредиентов
+
+После справочника единиц измерения добавлен отдельный справочник ингредиентов.
+
+На этом этапе реализовано:
+
+- создана сущность `Ingredient`;
+- создана таблица `ingredients`;
+- добавлены поля КБЖУ на 100 г продукта:
+  - `calories_per_100g`;
+  - `proteins_per_100g`;
+  - `fats_per_100g`;
+  - `carbohydrates_per_100g`;
+- добавлены стандартные поля справочника:
+  - `name`;
+  - `slug`;
+  - `description`;
+  - `sort_order`;
+  - `is_active`;
+  - `created_at`;
+  - `updated_at`;
+- создан `IngredientResponseDto`;
+- созданы `IngredientsModule`, `IngredientsService`, `IngredientsController`;
+- `IngredientsModule` подключён в `AppModule`;
+- добавлена публичная ручка получения активных ингредиентов;
+- ручка описана в Swagger/OpenAPI;
+- seed-скрипт расширен стартовыми ингредиентами;
+- заполнение ингредиентов выполняется через `upsert` по `slug`.
+
+Публичная ручка:
+
+```txt
+GET /{apiPrefix}/ingredients
+```
+
+Если `apiPrefix=api`, фактический путь:
+
+```txt
+GET /api/ingredients
+```
+
+Актуальный адрес Swagger/OpenAPI:
+
+```txt
+http://localhost:5000/api/docs
+```
+
+Справочник ингредиентов нужен как основа будущего расчёта КБЖУ рецептов.
+
+На текущем этапе ингредиенты существуют отдельно от рецептов. Связь ингредиентов с рецептами будет добавляться позже через таблицу состава рецепта.
+<!-- INGREDIENTS_STAGE_END -->

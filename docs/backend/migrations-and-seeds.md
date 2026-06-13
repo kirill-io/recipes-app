@@ -583,3 +583,66 @@ yarn --cwd backend seed
 
 Если в `package.json` команда называется иначе, например `seed:run`, в документации нужно использовать фактическое имя команды.
 <!-- UNITS_MIGRATION_SEED_STAGE_END -->
+
+<!-- INGREDIENTS_MIGRATION_SEED_STAGE_START -->
+## Миграция и seed ингредиентов
+
+Для справочника ингредиентов добавлена сущность `Ingredient` и миграция, создающая таблицу `ingredients`.
+
+Таблица `ingredients` содержит поля:
+
+- `id`;
+- `name`;
+- `slug`;
+- `description`;
+- `calories_per_100g`;
+- `proteins_per_100g`;
+- `fats_per_100g`;
+- `carbohydrates_per_100g`;
+- `sort_order`;
+- `is_active`;
+- `created_at`;
+- `updated_at`.
+
+Для `slug` используется уникальный индекс.
+
+Seed-данные ингредиентов находятся в файле:
+
+```txt
+src/database/seeds/data/ingredients.seed.ts
+```
+
+Общий seed-скрипт:
+
+```txt
+src/database/seeds/run-seeds.ts
+```
+
+теперь заполняет:
+
+- категории;
+- теги;
+- единицы измерения;
+- ингредиенты.
+
+Ингредиенты добавляются через `upsert` по полю `slug`, поэтому повторный запуск seed-скрипта не создаёт дубли.
+
+Пример логики:
+
+```ts
+await ingredientsRepository.upsert(ingredientsSeedData, ['slug'])
+```
+
+Команда запуска seed:
+
+```bash
+yarn --cwd backend seed:run
+```
+
+После применения миграции и запуска seed в базе должны быть заполнены справочники:
+
+- `categories`;
+- `tags`;
+- `units`;
+- `ingredients`.
+<!-- INGREDIENTS_MIGRATION_SEED_STAGE_END -->

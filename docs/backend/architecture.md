@@ -814,3 +814,75 @@ count
 - `volume` — объёмные единицы;
 - `count` — штучные единицы.
 <!-- UNITS_MODULE_STAGE_END -->
+
+<!-- INGREDIENTS_MODULE_STAGE_START -->
+## Обновление: модуль ингредиентов
+
+Для ингредиентов добавлен отдельный backend-модуль `IngredientsModule`.
+
+Модуль расположен в бизнес-слое приложения:
+
+```txt
+src/modules/ingredients/
+  dto/
+    ingredient-response.dto.ts
+  entities/
+    ingredient.entity.ts
+  ingredients.controller.ts
+  ingredients.module.ts
+  ingredients.service.ts
+  index.ts
+```
+
+`Ingredient` является справочной сущностью и хранит пищевую ценность продукта на 100 г.
+
+Основные поля сущности:
+
+- `id` — числовой идентификатор;
+- `name` — название ингредиента;
+- `slug` — уникальный URL-идентификатор;
+- `description` — описание ингредиента;
+- `caloriesPer100g` — калории на 100 г;
+- `proteinsPer100g` — белки на 100 г;
+- `fatsPer100g` — жиры на 100 г;
+- `carbohydratesPer100g` — углеводы на 100 г;
+- `sortOrder` — порядок сортировки;
+- `isActive` — признак активности;
+- `createdAt` — дата создания;
+- `updatedAt` — дата обновления.
+
+Поля КБЖУ в PostgreSQL хранятся как `numeric`, поэтому в entity они представлены строками. В публичном DTO они преобразуются в `number`.
+
+`IngredientsModule` использует:
+
+```ts
+TypeOrmModule.forFeature([Ingredient])
+```
+
+Это нужно, чтобы `IngredientsService` мог работать с `Repository<Ingredient>` через:
+
+```ts
+@InjectRepository(Ingredient)
+```
+
+`IngredientsService` отвечает за:
+
+- получение активных ингредиентов из базы;
+- сортировку ингредиентов;
+- преобразование `Ingredient` entity в `IngredientResponseDto`;
+- преобразование numeric-строк в числа для публичного API.
+
+`IngredientsController` предоставляет публичную ручку:
+
+```txt
+GET /{apiPrefix}/ingredients
+```
+
+Если `apiPrefix=api`, фактический путь:
+
+```txt
+GET /api/ingredients
+```
+
+`IngredientsModule` подключён в `AppModule` вместе с модулями категорий, тегов и единиц измерения.
+<!-- INGREDIENTS_MODULE_STAGE_END -->
