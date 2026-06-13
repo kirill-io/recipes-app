@@ -521,3 +521,65 @@ GET /api/categories
 GET /api/tags
 ```
 <!-- TAGS_MIGRATION_SEED_STAGE_END -->
+
+<!-- UNITS_MIGRATION_SEED_STAGE_START -->
+## Миграция и seed единиц измерения
+
+Для справочника единиц измерения добавлена сущность `Unit` и сгенерирована миграция создания таблицы `units`.
+
+Миграция создаёт:
+
+- таблицу `units`;
+- enum-тип для `UnitType`;
+- уникальный индекс по `slug`;
+- служебные поля `created_at` и `updated_at`.
+
+Стартовые данные вынесены в файл:
+
+```txt
+src/database/seeds/data/units.seed.ts
+```
+
+Seed содержит базовый набор единиц измерения:
+
+- `г`;
+- `кг`;
+- `мл`;
+- `л`;
+- `ч. л.`;
+- `ст. л.`;
+- `шт.`.
+
+Общий seed-runner расширен:
+
+- получает репозиторий `Unit`;
+- импортирует `unitsSeedData`;
+- выполняет `unitsRepository.upsert(unitsSeedData, ['slug'])`;
+- выводит количество обработанных единиц измерения в консоль.
+
+Пример логики:
+
+```ts
+await unitsRepository.upsert(unitsSeedData, ['slug'])
+```
+
+Для поля `conversionFactorToBase` в seed используются строковые значения, потому что в entity поле связано с PostgreSQL `numeric`, а TypeORM обычно возвращает `numeric` как `string`.
+
+Пример:
+
+```ts
+conversionFactorToBase: '1000'
+```
+
+В API это значение преобразуется в число на уровне `UnitsService`.
+
+Команда запуска seed зависит от текущего `backend/package.json`.
+
+На текущем этапе используется команда:
+
+```bash
+yarn --cwd backend seed
+```
+
+Если в `package.json` команда называется иначе, например `seed:run`, в документации нужно использовать фактическое имя команды.
+<!-- UNITS_MIGRATION_SEED_STAGE_END -->

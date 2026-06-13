@@ -752,3 +752,65 @@ GET /api/tags
 
 `TagsModule` подключается в `AppModule` в массиве `imports`.
 <!-- TAGS_MODULE_STAGE_END -->
+
+<!-- UNITS_MODULE_STAGE_START -->
+## Обновление: модуль единиц измерения
+
+Добавлен backend-модуль `UnitsModule`.
+
+Модуль расположен в бизнес-слое приложения:
+
+```txt
+src/modules/units/
+  dto/
+    unit-response.dto.ts
+  entities/
+    unit.entity.ts
+  enums/
+    unit-type.enum.ts
+  units.controller.ts
+  units.service.ts
+  units.module.ts
+  index.ts
+```
+
+`UnitsModule` подключается в `AppModule` как самостоятельный справочный модуль.
+
+Модуль использует:
+
+```ts
+TypeOrmModule.forFeature([Unit])
+```
+
+Это нужно, чтобы `UnitsService` мог работать с `Repository<Unit>` через:
+
+```ts
+@InjectRepository(Unit)
+```
+
+`UnitsController` предоставляет публичную ручку получения активных единиц измерения.
+
+`UnitsService` отвечает за:
+
+- получение активных единиц измерения из базы;
+- сортировку единиц измерения;
+- преобразование `Unit` entity в `UnitResponseDto`.
+
+Для единиц измерения добавлен отдельный enum `UnitType`, потому что `type` является фиксированной технической классификацией единицы измерения, а не пользовательским справочником.
+
+Текущие значения `UnitType`:
+
+```txt
+mass
+volume
+count
+```
+
+Категории и теги не используют enum для типа, потому что они являются изменяемыми справочниками контента.
+
+Единицы измерения тоже хранятся в базе, но их поле `type` влияет на будущую бизнес-логику пересчётов:
+
+- `mass` — массовые единицы;
+- `volume` — объёмные единицы;
+- `count` — штучные единицы.
+<!-- UNITS_MODULE_STAGE_END -->

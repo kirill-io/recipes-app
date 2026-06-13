@@ -268,3 +268,71 @@ http://localhost:5000/api/swagger
 - при создании и редактировании рецепта;
 - в поиске и подборках.
 <!-- TAGS_API_STAGE_END -->
+
+<!-- UNITS_API_STAGE_START -->
+## Units API
+
+### Получить список активных единиц измерения
+
+```txt
+GET /{apiPrefix}/units
+```
+
+Если `apiPrefix=api`, фактический путь:
+
+```txt
+GET /api/units
+```
+
+Ручка публичная и используется как справочник для будущих форм рецептов и ингредиентов.
+
+Ручка возвращает только активные записи, у которых:
+
+```txt
+isActive = true
+```
+
+Сортировка выполняется по:
+
+1. `sortOrder` по возрастанию;
+2. `name` по возрастанию.
+
+Пример ответа:
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Грамм",
+    "shortName": "г",
+    "slug": "gram",
+    "type": "mass",
+    "conversionFactorToBase": 1,
+    "sortOrder": 10
+  },
+  {
+    "id": 2,
+    "name": "Килограмм",
+    "shortName": "кг",
+    "slug": "kilogram",
+    "type": "mass",
+    "conversionFactorToBase": 1000,
+    "sortOrder": 20
+  }
+]
+```
+
+Публичный ответ описан через `UnitResponseDto`.
+
+В ответ не включаются технические поля:
+
+- `isActive`;
+- `createdAt`;
+- `updatedAt`.
+
+Swagger/OpenAPI доступен по адресу:
+
+```txt
+http://localhost:5000/api/docs
+```
+<!-- UNITS_API_STAGE_END -->
