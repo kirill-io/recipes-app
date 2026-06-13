@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { configLoaders, getTypeOrmConfig } from '@config'
 import { CategoriesModule } from '@modules/categories'
 import { TagsModule } from '@modules/tags'
+import { UnitsModule } from '@modules/units'
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TagsModule } from '@modules/tags'
     }),
     CategoriesModule,
     TagsModule,
+    UnitsModule,
   ],
 })
 export class AppModule {}
