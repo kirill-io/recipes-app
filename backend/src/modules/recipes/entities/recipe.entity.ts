@@ -13,6 +13,7 @@ import { Category } from '../../categories/entities/category.entity'
 import { NutritionCalculationMode } from '../enums/nutrition-calculation-mode.enum'
 import { RecipeDifficulty } from '../enums/recipe-difficulty.enum'
 import { RecipeStatus } from '../enums/recipe-status.enum'
+import { RecipeStep } from './recipe-step.entity'
 import { RecipeTag } from './recipe-tag.entity'
 
 @Entity('recipes')
@@ -58,6 +59,9 @@ export class Recipe {
 
   @OneToMany(() => RecipeTag, (recipeTag) => recipeTag.recipe)
   recipeTags!: RecipeTag[]
+
+  @OneToMany(() => RecipeStep, (step) => step.recipe)
+  steps!: RecipeStep[]
 
   @Column({
     type: 'enum',

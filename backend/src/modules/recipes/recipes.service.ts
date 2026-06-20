@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
+import { RecipeCategoryResponseDto } from './dto/recipe-category-response.dto'
 import { RecipeListItemResponseDto } from './dto/recipe-list-item-response.dto'
 import { RecipeResponseDto } from './dto/recipe-response.dto'
+import { RecipeStepResponseDto } from './dto/recipe-step-response.dto'
 import { RecipeTagResponseDto } from './dto/recipe-tag-response.dto'
 import { Recipe } from './entities/recipe.entity'
 import { RecipeStatus } from './enums/recipe-status.enum'
@@ -45,6 +47,7 @@ export class RecipesService {
         recipeTags: {
           tag: true,
         },
+        steps: true,
       },
       where: {
         slug,
@@ -75,11 +78,7 @@ export class RecipesService {
       cookingTimeMinutes: recipe.cookingTimeMinutes,
       servings: recipe.servings,
       difficulty: recipe.difficulty,
-      category: {
-        id: recipe.category.id,
-        name: recipe.category.name,
-        slug: recipe.category.slug,
-      },
+      category: this.mapRecipeCategoryToResponseDto(recipe),
       tags: this.mapRecipeTagsToResponseDto(recipe),
       nutritionCalculationMode: recipe.nutritionCalculationMode,
       caloriesPer100g: this.toNullableNumber(recipe.caloriesPer100g),
@@ -100,12 +99,9 @@ export class RecipesService {
       cookingTimeMinutes: recipe.cookingTimeMinutes,
       servings: recipe.servings,
       difficulty: recipe.difficulty,
-      category: {
-        id: recipe.category.id,
-        name: recipe.category.name,
-        slug: recipe.category.slug,
-      },
+      category: this.mapRecipeCategoryToResponseDto(recipe),
       tags: this.mapRecipeTagsToResponseDto(recipe),
+      steps: this.mapRecipeStepsToResponseDto(recipe),
       nutritionCalculationMode: recipe.nutritionCalculationMode,
       caloriesPer100g: this.toNullableNumber(recipe.caloriesPer100g),
       proteinsPer100g: this.toNullableNumber(recipe.proteinsPer100g),
@@ -119,8 +115,20 @@ export class RecipesService {
     }
   }
 
+  private mapRecipeCategoryToResponseDto(
+    recipe: Recipe,
+  ): RecipeCategoryResponseDto {
+    return {
+      id: recipe.category.id,
+      name: recipe.category.name,
+      slug: recipe.category.slug,
+    }
+  }
+
   private mapRecipeTagsToResponseDto(recipe: Recipe): RecipeTagResponseDto[] {
-    return [...(recipe.recipeTags ?? [])]
+    const recipeTags = [...(recipe.recipeTags ?? [])]
+
+    return recipeTags
       .filter((recipeTag) => recipeTag.tag.isActive)
       .sort((firstRecipeTag, secondRecipeTag) => {
         if (firstRecipeTag.sortOrder !== secondRecipeTag.sortOrder) {
@@ -129,11 +137,30 @@ export class RecipesService {
 
         return firstRecipeTag.tag.name.localeCompare(secondRecipeTag.tag.name)
       })
-      .map((recipeTag) => ({
-        id: recipeTag.tag.id,
-        name: recipeTag.tag.name,
-        slug: recipeTag.tag.slug,
-      }))
+      .map(
+        (recipeTag): RecipeTagResponseDto => ({
+          id: recipeTag.tag.id,
+          name: recipeTag.tag.name,
+          slug: recipeTag.tag.slug,
+        }),
+      )
+  }
+
+  private mapRecipeStepsToResponseDto(recipe: Recipe): RecipeStepResponseDto[] {
+    const steps = [...(recipe.steps ?? [])]
+
+    return steps
+      .sort(
+        (firstStep, secondStep) => firstStep.stepNumber - secondStep.stepNumber,
+      )
+      .map(
+        (step): RecipeStepResponseDto => ({
+          id: step.id,
+          stepNumber: step.stepNumber,
+          description: step.description,
+          imageUrl: step.imageUrl,
+        }),
+      )
   }
 
   private toNullableNumber(value: string | null): number | null {
