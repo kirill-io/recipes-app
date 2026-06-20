@@ -391,3 +391,62 @@ Swagger/OpenAPI доступен по адресу:
 http://localhost:5000/api/docs
 ```
 <!-- INGREDIENTS_API_STAGE_END -->
+
+<!-- INGREDIENT_UNIT_CONVERSIONS_API_STAGE_START -->
+## Ingredient unit conversions API
+
+### Получить список активных конверсий ингредиентов в граммы
+
+```txt
+GET /{apiPrefix}/ingredient-unit-conversions
+```
+
+Если `apiPrefix=api`, фактический путь:
+
+```txt
+GET /api/ingredient-unit-conversions
+```
+
+Ручка возвращает список активных конверсий ингредиентов в граммы.
+
+Ручка отдаёт только те конверсии, у которых:
+
+- активна сама конверсия;
+- активен связанный ингредиент;
+- активна связанная единица измерения.
+
+Пример элемента ответа:
+
+```json
+{
+  "id": 1,
+  "ingredientId": 2,
+  "ingredientName": "Куриное яйцо",
+  "ingredientSlug": "kurinoe-yayco",
+  "unitId": 7,
+  "unitName": "Штука",
+  "unitShortName": "шт.",
+  "unitSlug": "piece",
+  "gramsPerUnit": 55,
+  "description": "Среднее куриное яйцо без скорлупы.",
+  "sortOrder": 10
+}
+```
+
+Поле `gramsPerUnit` показывает, сколько грамм соответствует одной указанной единице конкретного ингредиента.
+
+Примеры смысла данных:
+
+```txt
+Куриное яйцо + Штука = 55 г
+Банан + Штука = 120 г
+Оливковое масло + Столовая ложка = 13.5 г
+Оливковое масло + Чайная ложка = 4.5 г
+```
+
+Swagger/OpenAPI доступен по адресу:
+
+```txt
+http://localhost:5000/api/docs
+```
+<!-- INGREDIENT_UNIT_CONVERSIONS_API_STAGE_END -->

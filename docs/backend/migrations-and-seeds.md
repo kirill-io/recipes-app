@@ -646,3 +646,87 @@ yarn --cwd backend seed:run
 - `units`;
 - `ingredients`.
 <!-- INGREDIENTS_MIGRATION_SEED_STAGE_END -->
+
+<!-- INGREDIENT_UNIT_CONVERSIONS_MIGRATION_SEED_STAGE_START -->
+## Миграция и seed конверсий ингредиентов в граммы
+
+Для пересчёта ингредиентов в граммы добавлена таблица:
+
+```txt
+ingredient_unit_conversions
+```
+
+Таблица содержит:
+
+- `id`;
+- `ingredient_id`;
+- `unit_id`;
+- `grams_per_unit`;
+- `description`;
+- `sort_order`;
+- `is_active`;
+- `created_at`;
+- `updated_at`.
+
+`ingredient_id` является внешним ключом на таблицу `ingredients`.
+
+`unit_id` является внешним ключом на таблицу `units`.
+
+Для пары `ingredient_id + unit_id` используется уникальный индекс. Это нужно, чтобы одна и та же пара ингредиента и единицы измерения не дублировалась.
+
+Seed-данные конверсий находятся в файле:
+
+```txt
+src/database/seeds/data/ingredient-unit-conversions.seed.ts
+```
+
+В seed-файле используются не числовые id, а стабильные slug:
+
+```ts
+{
+  ingredientSlug: 'kurinoe-yayco',
+  unitSlug: 'piece',
+  gramsPerUnit: '55.00',
+  description: 'Среднее куриное яйцо без скорлупы.',
+  sortOrder: 10,
+  isActive: true,
+}
+```
+
+Это сделано специально. Числовые id могут отличаться в разных базах, а slug являются стабильными и читаемыми.
+
+В общем seed-скрипте:
+
+```txt
+src/database/seeds/run-seeds.ts
+```
+
+добавлена логика:
+
+1. заполнить базовые справочники;
+2. прочитать ингредиенты из базы;
+3. прочитать единицы измерения из базы;
+4. построить словарь `ingredientBySlug`;
+5. построить словарь `unitBySlug`;
+6. преобразовать `ingredientSlug` и `unitSlug` в реальные `ingredientId` и `unitId`;
+7. выполнить `upsert` конверсий по паре `ingredientId + unitId`.
+
+Пример логики:
+
+```ts
+await ingredientUnitConversionsRepository.upsert(
+  ingredientUnitConversionsToSave,
+  ['ingredientId', 'unitId'],
+)
+```
+
+Такой подход позволяет повторно запускать seed-скрипт без создания дублей.
+
+Команды:
+
+```bash
+yarn --cwd backend migration:generate src/database/migrations/CreateIngredientUnitConversionsTable
+yarn --cwd backend migration:run
+yarn --cwd backend seed:run
+```
+<!-- INGREDIENT_UNIT_CONVERSIONS_MIGRATION_SEED_STAGE_END -->

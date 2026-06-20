@@ -486,3 +486,46 @@ Swagger UI:
 - расчёта КБЖУ рецепта;
 - публичных ручек каталога рецептов.
 <!-- INGREDIENTS_ROADMAP_STAGE_END -->
+
+<!-- INGREDIENT_UNIT_CONVERSIONS_ROADMAP_STAGE_START -->
+## Обновление roadmap: конверсии ингредиентов в граммы
+
+Выполнен следующий backend-этап — конверсии ингредиентов в граммы.
+
+Сделано:
+
+- создана сущность `IngredientUnitConversion`;
+- создана таблица `ingredient_unit_conversions`;
+- добавлены связи с `Ingredient` и `Unit`;
+- добавлено поле `gramsPerUnit`;
+- добавлена уникальность пары `ingredientId + unitId`;
+- добавлены `IngredientUnitConversionsModule`, `IngredientUnitConversionsService`, `IngredientUnitConversionsController`;
+- добавлен `IngredientUnitConversionResponseDto`;
+- модуль подключён в `AppModule`;
+- добавлена публичная ручка `GET /{apiPrefix}/ingredient-unit-conversions`;
+- при `apiPrefix=api` ручка доступна как `GET /api/ingredient-unit-conversions`;
+- ручка описана в Swagger/OpenAPI;
+- добавлены seed-данные конверсий;
+- общий `run-seeds.ts` расширен преобразованием `ingredientSlug` и `unitSlug` в реальные `ingredientId` и `unitId`;
+- seed конверсий выполняется через `upsert` по паре `ingredientId + unitId`.
+
+Текущий статус backend:
+
+- базовая конфигурация NestJS выполнена;
+- PostgreSQL и TypeORM подключены;
+- TypeORM DataSource для CLI настроен;
+- миграции работают;
+- Swagger/OpenAPI подключён;
+- справочник категорий реализован;
+- справочник тегов реализован;
+- справочник единиц измерения реализован;
+- справочник ингредиентов реализован;
+- конверсии ингредиентов в граммы реализованы.
+
+Следующий рекомендуемый этап — проектирование базовой модели рецептов:
+
+- `recipes`;
+- `recipe_ingredients`;
+- `recipe_tags`;
+- расчёт КБЖУ рецепта на основе ингредиентов, единиц измерения и конверсий.
+<!-- INGREDIENT_UNIT_CONVERSIONS_ROADMAP_STAGE_END -->

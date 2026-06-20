@@ -321,3 +321,69 @@ http://localhost:5000/api/docs
 
 На текущем этапе ингредиенты существуют отдельно от рецептов. Связь ингредиентов с рецептами будет добавляться позже через таблицу состава рецепта.
 <!-- INGREDIENTS_STAGE_END -->
+
+<!-- INGREDIENT_UNIT_CONVERSIONS_STAGE_START -->
+## Обновление: конверсии ингредиентов в граммы
+
+После справочников единиц измерения и ингредиентов добавлена таблица конверсий ингредиентов в граммы:
+
+```txt
+ingredient_unit_conversions
+```
+
+Эта таблица нужна для случаев, когда количество ингредиента указывается не напрямую в граммах, а через единицы вроде:
+
+- `1 шт.`;
+- `1 ч. л.`;
+- `1 ст. л.`;
+- `1 мл`.
+
+Обычный справочник единиц измерения не может сам определить вес продукта в граммах, потому что вес зависит от конкретного ингредиента.
+
+Примеры:
+
+```txt
+1 куриное яйцо = 55 г
+1 банан = 120 г
+1 ст. л. оливкового масла = 13.5 г
+1 ч. л. оливкового масла = 4.5 г
+1 ст. л. молока = 15 г
+```
+
+На этом этапе реализовано:
+
+- создана сущность `IngredientUnitConversion`;
+- создана таблица `ingredient_unit_conversions`;
+- добавлена связь с `Ingredient`;
+- добавлена связь с `Unit`;
+- добавлено поле `grams_per_unit`;
+- добавлены служебные поля `description`, `sort_order`, `is_active`, `created_at`, `updated_at`;
+- добавлена уникальность пары `ingredient_id + unit_id`;
+- добавлены `IngredientUnitConversionsModule`, `IngredientUnitConversionsService`, `IngredientUnitConversionsController`;
+- добавлен `IngredientUnitConversionResponseDto`;
+- модуль подключён в `AppModule`;
+- добавлена публичная ручка получения активных конверсий;
+- ручка описана в Swagger/OpenAPI;
+- добавлен seed-файл `ingredient-unit-conversions.seed.ts`;
+- общий `run-seeds.ts` расширен заполнением конверсий через преобразование `ingredientSlug` и `unitSlug` в реальные `ingredientId` и `unitId`.
+
+Публичная ручка:
+
+```txt
+GET /{apiPrefix}/ingredient-unit-conversions
+```
+
+Если `apiPrefix=api`, фактический путь:
+
+```txt
+GET /api/ingredient-unit-conversions
+```
+
+Актуальный адрес Swagger/OpenAPI:
+
+```txt
+http://localhost:5000/api/docs
+```
+
+Этот этап подготавливает базу для будущей таблицы состава рецепта `recipe_ingredients` и автоматического расчёта КБЖУ.
+<!-- INGREDIENT_UNIT_CONVERSIONS_STAGE_END -->

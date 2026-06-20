@@ -886,3 +886,92 @@ GET /api/ingredients
 
 `IngredientsModule` подключён в `AppModule` вместе с модулями категорий, тегов и единиц измерения.
 <!-- INGREDIENTS_MODULE_STAGE_END -->
+
+<!-- INGREDIENT_UNIT_CONVERSIONS_MODULE_STAGE_START -->
+## Обновление: модуль конверсий ингредиентов в граммы
+
+Для пересчёта нестандартных единиц ингредиентов в граммы добавлен отдельный backend-модуль:
+
+```txt
+src/modules/ingredient-unit-conversions/
+  dto/
+    ingredient-unit-conversion-response.dto.ts
+  entities/
+    ingredient-unit-conversion.entity.ts
+  ingredient-unit-conversions.controller.ts
+  ingredient-unit-conversions.module.ts
+  ingredient-unit-conversions.service.ts
+  index.ts
+```
+
+`IngredientUnitConversion` является связующей сущностью между ингредиентом и единицей измерения.
+
+Основная идея:
+
+```txt
+Ingredient + Unit → gramsPerUnit
+```
+
+Примеры:
+
+```txt
+Куриное яйцо + Штука → 55 г
+Банан + Штука → 120 г
+Оливковое масло + Столовая ложка → 13.5 г
+Оливковое масло + Чайная ложка → 4.5 г
+```
+
+Сущность содержит поля:
+
+- `id` — числовой идентификатор;
+- `ingredientId` — идентификатор ингредиента;
+- `ingredient` — связь с `Ingredient`;
+- `unitId` — идентификатор единицы измерения;
+- `unit` — связь с `Unit`;
+- `gramsPerUnit` — количество грамм в одной указанной единице;
+- `description` — пояснение к конверсии;
+- `sortOrder` — порядок сортировки;
+- `isActive` — признак активности;
+- `createdAt` — дата создания;
+- `updatedAt` — дата обновления.
+
+Связи описаны через `ManyToOne`:
+
+```txt
+IngredientUnitConversion many-to-one Ingredient
+IngredientUnitConversion many-to-one Unit
+```
+
+Для внешних ключей используется поведение `onDelete: 'CASCADE'`.
+
+Если ингредиент или единица измерения будут физически удалены, связанные конверсии также будут удалены. В обычной бизнес-логике предполагается не физическое удаление справочников, а отключение через `isActive`.
+
+Для пары `ingredientId + unitId` добавлен уникальный индекс. Это не позволяет создать две разные конверсии для одного и того же ингредиента и одной и той же единицы измерения.
+
+`IngredientUnitConversionsModule` использует:
+
+```ts
+TypeOrmModule.forFeature([IngredientUnitConversion])
+```
+
+`IngredientUnitConversionsService` отвечает за:
+
+- получение активных конверсий;
+- фильтрацию по активности связанного ингредиента;
+- фильтрацию по активности связанной единицы измерения;
+- подгрузку данных ингредиента и единицы измерения;
+- преобразование entity в `IngredientUnitConversionResponseDto`;
+- преобразование `numeric`-значения `gramsPerUnit` в `number` для публичного API.
+
+`IngredientUnitConversionsController` предоставляет публичную ручку:
+
+```txt
+GET /{apiPrefix}/ingredient-unit-conversions
+```
+
+Если `apiPrefix=api`, фактический путь:
+
+```txt
+GET /api/ingredient-unit-conversions
+```
+<!-- INGREDIENT_UNIT_CONVERSIONS_MODULE_STAGE_END -->
