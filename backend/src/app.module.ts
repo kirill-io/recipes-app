@@ -5,6 +5,7 @@ import { configLoaders, getTypeOrmConfig } from '@config'
 import { CategoriesModule } from '@modules/categories'
 import { IngredientUnitConversionsModule } from '@modules/ingredient-unit-conversions'
 import { IngredientsModule } from '@modules/ingredients'
+import { RecipesModule } from '@modules/recipes'
 import { TagsModule } from '@modules/tags'
 import { UnitsModule } from '@modules/units'
 
@@ -26,6 +27,7 @@ import { UnitsModule } from '@modules/units'
     UnitsModule,
     IngredientsModule,
     IngredientUnitConversionsModule,
+    RecipesModule,
   ],
 })
 export class AppModule {}
