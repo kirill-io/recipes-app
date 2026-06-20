@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 import { NutritionCalculationMode } from '../enums/nutrition-calculation-mode.enum'
 import { RecipeDifficulty } from '../enums/recipe-difficulty.enum'
 import { RecipeCategoryResponseDto } from './recipe-category-response.dto'
+import { RecipeTagResponseDto } from './recipe-tag-response.dto'
 
 export class RecipeResponseDto {
   @ApiProperty({
@@ -68,6 +69,12 @@ export class RecipeResponseDto {
     description: 'Категория рецепта',
   })
   category!: RecipeCategoryResponseDto
+
+  @ApiProperty({
+    type: [RecipeTagResponseDto],
+    description: 'Теги рецепта',
+  })
+  tags!: RecipeTagResponseDto[]
 
   @ApiProperty({
     enum: NutritionCalculationMode,

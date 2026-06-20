@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { RecipeListItemResponseDto } from './dto/recipe-list-item-response.dto'
 import { RecipeResponseDto } from './dto/recipe-response.dto'
+import { RecipeTagResponseDto } from './dto/recipe-tag-response.dto'
 import { Recipe } from './entities/recipe.entity'
 import { RecipeStatus } from './enums/recipe-status.enum'
 
@@ -17,6 +18,9 @@ export class RecipesService {
     const recipes = await this.recipesRepository.find({
       relations: {
         category: true,
+        recipeTags: {
+          tag: true,
+        },
       },
       where: {
         isActive: true,
@@ -38,6 +42,9 @@ export class RecipesService {
     const recipe = await this.recipesRepository.findOne({
       relations: {
         category: true,
+        recipeTags: {
+          tag: true,
+        },
       },
       where: {
         slug,
@@ -73,6 +80,7 @@ export class RecipesService {
         name: recipe.category.name,
         slug: recipe.category.slug,
       },
+      tags: this.mapRecipeTagsToResponseDto(recipe),
       nutritionCalculationMode: recipe.nutritionCalculationMode,
       caloriesPer100g: this.toNullableNumber(recipe.caloriesPer100g),
       proteinsPer100g: this.toNullableNumber(recipe.proteinsPer100g),
@@ -97,6 +105,7 @@ export class RecipesService {
         name: recipe.category.name,
         slug: recipe.category.slug,
       },
+      tags: this.mapRecipeTagsToResponseDto(recipe),
       nutritionCalculationMode: recipe.nutritionCalculationMode,
       caloriesPer100g: this.toNullableNumber(recipe.caloriesPer100g),
       proteinsPer100g: this.toNullableNumber(recipe.proteinsPer100g),
@@ -108,6 +117,23 @@ export class RecipesService {
       carbohydratesTotal: this.toNullableNumber(recipe.carbohydratesTotal),
       cookedWeightGrams: this.toNullableNumber(recipe.cookedWeightGrams),
     }
+  }
+
+  private mapRecipeTagsToResponseDto(recipe: Recipe): RecipeTagResponseDto[] {
+    return [...(recipe.recipeTags ?? [])]
+      .filter((recipeTag) => recipeTag.tag.isActive)
+      .sort((firstRecipeTag, secondRecipeTag) => {
+        if (firstRecipeTag.sortOrder !== secondRecipeTag.sortOrder) {
+          return firstRecipeTag.sortOrder - secondRecipeTag.sortOrder
+        }
+
+        return firstRecipeTag.tag.name.localeCompare(secondRecipeTag.tag.name)
+      })
+      .map((recipeTag) => ({
+        id: recipeTag.tag.id,
+        name: recipeTag.tag.name,
+        slug: recipeTag.tag.slug,
+      }))
   }
 
   private toNullableNumber(value: string | null): number | null {

@@ -5,6 +5,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
@@ -12,6 +13,7 @@ import { Category } from '../../categories/entities/category.entity'
 import { NutritionCalculationMode } from '../enums/nutrition-calculation-mode.enum'
 import { RecipeDifficulty } from '../enums/recipe-difficulty.enum'
 import { RecipeStatus } from '../enums/recipe-status.enum'
+import { RecipeTag } from './recipe-tag.entity'
 
 @Entity('recipes')
 @Index('IDX_recipes_slug', ['slug'], { unique: true })
@@ -53,6 +55,9 @@ export class Recipe {
   @ManyToOne(() => Category, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'category_id' })
   category!: Category
+
+  @OneToMany(() => RecipeTag, (recipeTag) => recipeTag.recipe)
+  recipeTags!: RecipeTag[]
 
   @Column({
     type: 'enum',
