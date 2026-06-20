@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { configLoaders, getTypeOrmConfig } from '@config'
 import { CategoriesModule } from '@modules/categories'
+import { IngredientUnitConversionsModule } from '@modules/ingredient-unit-conversions'
 import { IngredientsModule } from '@modules/ingredients'
 import { TagsModule } from '@modules/tags'
 import { UnitsModule } from '@modules/units'
@@ -24,6 +25,7 @@ import { UnitsModule } from '@modules/units'
     TagsModule,
     UnitsModule,
     IngredientsModule,
+    IngredientUnitConversionsModule,
   ],
 })
 export class AppModule {}
