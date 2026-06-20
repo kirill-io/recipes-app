@@ -450,3 +450,85 @@ Swagger/OpenAPI доступен по адресу:
 http://localhost:5000/api/docs
 ```
 <!-- INGREDIENT_UNIT_CONVERSIONS_API_STAGE_END -->
+
+<!-- RECIPES_API_STAGE_START -->
+## Recipes API
+
+Добавлены публичные ручки рецептов.
+
+Базовый путь учитывает глобальный API-префикс.
+
+```txt
+GET /{apiPrefix}/recipes
+GET /{apiPrefix}/recipes/:slug
+```
+
+Если `apiPrefix=api`, фактические пути:
+
+```txt
+GET /api/recipes
+GET /api/recipes/:slug
+```
+
+Swagger/OpenAPI доступен по адресу:
+
+```txt
+http://localhost:5000/api/docs
+```
+
+### Получить список опубликованных рецептов
+
+```txt
+GET /{apiPrefix}/recipes
+```
+
+Возвращает список активных опубликованных рецептов.
+
+Ручка предназначена для каталога и карточек рецептов.
+
+В ответе есть:
+
+- `id`;
+- `title`;
+- `slug`;
+- `shortDescription`;
+- `imageUrl`;
+- `cookingTimeMinutes`;
+- `servings`;
+- `difficulty`;
+- `category`;
+- `tags`;
+- `nutritionCalculationMode`;
+- КБЖУ на 100 г.
+
+Шаги приготовления в этой ручке не возвращаются, чтобы не перегружать список рецептов лишними данными.
+
+### Получить опубликованный рецепт по slug
+
+```txt
+GET /{apiPrefix}/recipes/:slug
+```
+
+Возвращает детальную информацию об активном опубликованном рецепте по `slug`.
+
+В ответе есть:
+
+- базовые поля рецепта;
+- категория;
+- теги;
+- полное описание;
+- КБЖУ на 100 г;
+- КБЖУ всего;
+- вес готового блюда;
+- шаги приготовления.
+
+Если рецепт не найден, ручка возвращает `404`.
+
+На текущем этапе публично отдаются только рецепты:
+
+- со статусом `published`;
+- с `isActive = true`;
+- с активной категорией.
+
+Неактивные теги не попадают в массив `tags`.
+<!-- RECIPES_API_STAGE_END -->

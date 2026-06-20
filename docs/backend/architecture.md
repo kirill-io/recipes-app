@@ -975,3 +975,104 @@ GET /{apiPrefix}/ingredient-unit-conversions
 GET /api/ingredient-unit-conversions
 ```
 <!-- INGREDIENT_UNIT_CONVERSIONS_MODULE_STAGE_END -->
+
+<!-- RECIPES_MODULE_STAGE_START -->
+## Обновление: модуль рецептов
+
+Добавлен модуль `RecipesModule`, который отвечает за публичное чтение рецептов.
+
+Структура модуля:
+
+```txt
+src/modules/recipes/
+  dto/
+    recipe-category-response.dto.ts
+    recipe-list-item-response.dto.ts
+    recipe-response.dto.ts
+    recipe-step-response.dto.ts
+    recipe-tag-response.dto.ts
+  entities/
+    recipe.entity.ts
+    recipe-step.entity.ts
+    recipe-tag.entity.ts
+  enums/
+    nutrition-calculation-mode.enum.ts
+    recipe-difficulty.enum.ts
+    recipe-status.enum.ts
+  recipes.controller.ts
+  recipes.module.ts
+  recipes.service.ts
+  index.ts
+```
+
+`RecipesModule` подключается в `AppModule`.
+
+Модуль регистрирует entity через:
+
+```ts
+TypeOrmModule.forFeature([Recipe, RecipeTag, RecipeStep])
+```
+
+Текущие entity модуля:
+
+- `Recipe` — основная сущность рецепта;
+- `RecipeTag` — явная связующая entity между рецептом и тегом;
+- `RecipeStep` — шаг приготовления рецепта.
+
+### Связи Recipe
+
+`Recipe` связан:
+
+- с `Category` через `ManyToOne` и колонку `category_id`;
+- с `RecipeTag` через `OneToMany`;
+- с `RecipeStep` через `OneToMany`.
+
+Для связи рецепта с категорией используется:
+
+```txt
+onDelete: RESTRICT
+```
+
+Это нужно, чтобы случайное физическое удаление категории не удалило рецепты.
+
+### Связи RecipeTag
+
+`RecipeTag` связан:
+
+- с `Recipe` через `ManyToOne` и колонку `recipe_id`;
+- с `Tag` через `ManyToOne` и колонку `tag_id`.
+
+Для связей `recipe_tags` используется каскадное удаление, потому что запись связи не имеет смысла без рецепта или тега.
+
+### Связи RecipeStep
+
+`RecipeStep` связан:
+
+- с `Recipe` через `ManyToOne` и колонку `recipe_id`.
+
+Для шагов приготовления используется каскадное удаление, потому что шаг не имеет смысла без рецепта.
+
+### RecipesService
+
+В `RecipesService` публичная логика разделена на два метода:
+
+- `findAllPublished()` — получает список активных опубликованных рецептов;
+- `findPublishedBySlug(slug)` — получает один активный опубликованный рецепт по `slug`.
+
+Список рецептов загружает только связи, нужные для карточек:
+
+- `category`;
+- `recipeTags.tag`.
+
+Шаги приготовления в списке не загружаются.
+
+Детальная ручка загружает:
+
+- `category`;
+- `recipeTags.tag`;
+- `steps`.
+
+Маппинг entity в DTO пока находится внутри `RecipesService` в private-методах. Это допустимо для текущего этапа.
+
+После добавления `recipe_ingredients` и расчёта КБЖУ маппинг лучше вынести в отдельный mapper-файл внутри модуля рецептов.
+<!-- RECIPES_MODULE_STAGE_END -->

@@ -730,3 +730,104 @@ yarn --cwd backend migration:run
 yarn --cwd backend seed:run
 ```
 <!-- INGREDIENT_UNIT_CONVERSIONS_MIGRATION_SEED_STAGE_END -->
+
+<!-- RECIPES_MIGRATION_SEED_STAGE_START -->
+## Миграции и seed рецептов
+
+Добавлен слой рецептов, включающий таблицы:
+
+- `recipes`;
+- `recipe_tags`;
+- `recipe_steps`.
+
+Для таблиц рецептов создаются миграции TypeORM.
+
+DataSource продолжает использовать существующую настройку:
+
+```txt
+src/database/data-source.ts
+```
+
+Entity подхватываются по шаблону:
+
+```txt
+src/**/*.entity.ts
+```
+
+Seed-данные рецептов находятся в файлах:
+
+```txt
+src/database/seeds/data/recipes.seed.ts
+src/database/seeds/data/recipe-tags.seed.ts
+src/database/seeds/data/recipe-steps.seed.ts
+```
+
+### `recipes.seed.ts`
+
+Seed рецептов хранит стабильный `categorySlug`, а не числовой `categoryId`.
+
+В `run-seeds.ts` категории сначала записываются через `upsert` по `slug`, затем читаются из базы, после чего строится словарь:
+
+```txt
+categorySlug → Category
+```
+
+После этого seed рецептов преобразуется в записи с реальным `categoryId`.
+
+Рецепты записываются через:
+
+```ts
+await recipesRepository.upsert(recipesToSave, ['slug'])
+```
+
+Такой подход не зависит от конкретных числовых id в локальной базе.
+
+### `recipe-tags.seed.ts`
+
+Seed тегов рецептов хранит:
+
+- `recipeSlug`;
+- `tagSlug`;
+- `sortOrder`.
+
+В `run-seeds.ts` после записи рецептов и тегов строятся словари:
+
+```txt
+recipeSlug → Recipe
+tagSlug → Tag
+```
+
+После этого `recipeSlug + tagSlug` преобразуются в `recipeId + tagId`.
+
+Связи рецептов с тегами записываются через:
+
+```ts
+await recipeTagsRepository.upsert(recipeTagsToSave, ['recipeId', 'tagId'])
+```
+
+### `recipe-steps.seed.ts`
+
+Seed шагов рецептов хранит:
+
+- `recipeSlug`;
+- `stepNumber`;
+- `description`;
+- `imageUrl`.
+
+В `run-seeds.ts` `recipeSlug` преобразуется в реальный `recipeId`.
+
+Шаги рецептов записываются через:
+
+```ts
+await recipeStepsRepository.upsert(recipeStepsToSave, [
+  'recipeId',
+  'stepNumber',
+])
+```
+
+Такой подход позволяет повторно запускать seed без дублирования:
+
+- рецептов;
+- тегов рецептов;
+- шагов рецептов.
+<!-- RECIPES_MIGRATION_SEED_STAGE_END -->

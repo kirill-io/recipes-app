@@ -434,3 +434,46 @@ ingredient_unit_conversions
 
 Этот этап является подготовительным для будущей модели `recipe_ingredients`.
 <!-- INGREDIENT_UNIT_CONVERSIONS_NUTRITION_STAGE_END -->
+
+<!-- RECIPES_NUTRITION_STAGE_START -->
+## КБЖУ в базовой модели рецепта
+
+В базовой модели `Recipe` уже добавлены поля КБЖУ:
+
+- КБЖУ на 100 г;
+- КБЖУ на весь рецепт;
+- вес готового блюда;
+- режим расчёта КБЖУ.
+
+На текущем этапе используется режим:
+
+```txt
+NutritionCalculationMode.MANUAL
+```
+
+Это значит, что значения КБЖУ для seed-рецептов заполняются вручную.
+
+Режим:
+
+```txt
+NutritionCalculationMode.CALCULATED
+```
+
+заложен на будущее.
+
+Он будет использоваться после добавления состава рецепта:
+
+```txt
+recipe_ingredients
+```
+
+Будущий автоматический расчёт будет опираться на:
+
+- `ingredients` — КБЖУ ингредиентов на 100 г;
+- `units` — единицы измерения;
+- `ingredient_unit_conversions` — пересчёт нестандартных единиц в граммы;
+- `recipe_ingredients` — состав конкретного рецепта;
+- `recipes.cooked_weight_grams` — вес готового блюда.
+
+До появления `recipe_ingredients` расчёт КБЖУ по составу рецепта не выполняется.
+<!-- RECIPES_NUTRITION_STAGE_END -->

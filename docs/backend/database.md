@@ -640,3 +640,119 @@ ingredient + unit → grams_per_unit
 
 На уровне бизнес-логики для отключения конверсии используется `is_active`, а не создание второй записи для той же пары.
 <!-- INGREDIENT_UNIT_CONVERSIONS_DATABASE_STAGE_END -->
+
+<!-- RECIPES_DATABASE_STAGE_START -->
+## Таблицы рецептов
+
+Добавлены таблицы базового слоя рецептов:
+
+- `recipes`;
+- `recipe_tags`;
+- `recipe_steps`.
+
+### `recipes`
+
+Таблица `recipes` хранит основную информацию о рецепте.
+
+| Поле | Назначение |
+|---|---|
+| `id` | Идентификатор рецепта |
+| `title` | Название рецепта |
+| `slug` | Уникальный URL-идентификатор рецепта |
+| `short_description` | Краткое описание для карточек |
+| `description` | Полное описание |
+| `image_url` | Ссылка на изображение рецепта |
+| `cooking_time_minutes` | Время приготовления в минутах |
+| `servings` | Количество порций |
+| `difficulty` | Сложность рецепта |
+| `category_id` | Ссылка на категорию |
+| `status` | Статус рецепта |
+| `nutrition_calculation_mode` | Режим расчёта КБЖУ |
+| `calories_per_100g` | Калории на 100 г |
+| `proteins_per_100g` | Белки на 100 г |
+| `fats_per_100g` | Жиры на 100 г |
+| `carbohydrates_per_100g` | Углеводы на 100 г |
+| `calories_total` | Калории на весь рецепт |
+| `proteins_total` | Белки на весь рецепт |
+| `fats_total` | Жиры на весь рецепт |
+| `carbohydrates_total` | Углеводы на весь рецепт |
+| `cooked_weight_grams` | Вес готового блюда |
+| `sort_order` | Порядок сортировки |
+| `is_active` | Активность записи |
+| `created_at` | Дата создания |
+| `updated_at` | Дата обновления |
+
+Для `slug` создан уникальный индекс:
+
+```txt
+IDX_recipes_slug
+```
+
+Связь:
+
+```txt
+recipes.category_id → categories.id
+```
+
+Для связи рецепта с категорией используется ограничение:
+
+```txt
+ON DELETE RESTRICT
+```
+
+### `recipe_tags`
+
+Таблица `recipe_tags` связывает рецепты с тегами.
+
+| Поле | Назначение |
+|---|---|
+| `id` | Идентификатор связи |
+| `recipe_id` | Ссылка на рецепт |
+| `tag_id` | Ссылка на тег |
+| `sort_order` | Порядок сортировки тега внутри рецепта |
+| `created_at` | Дата создания |
+| `updated_at` | Дата обновления |
+
+Для пары `recipe_id + tag_id` создан уникальный индекс:
+
+```txt
+IDX_recipe_tags_pair
+```
+
+Связи:
+
+```txt
+recipe_tags.recipe_id → recipes.id
+recipe_tags.tag_id → tags.id
+```
+
+При физическом удалении рецепта или тега связанные записи `recipe_tags` удаляются каскадно.
+
+### `recipe_steps`
+
+Таблица `recipe_steps` хранит шаги приготовления рецепта.
+
+| Поле | Назначение |
+|---|---|
+| `id` | Идентификатор шага |
+| `recipe_id` | Ссылка на рецепт |
+| `step_number` | Номер шага |
+| `description` | Описание шага |
+| `image_url` | Опциональная ссылка на изображение шага |
+| `created_at` | Дата создания |
+| `updated_at` | Дата обновления |
+
+Для пары `recipe_id + step_number` создан уникальный индекс:
+
+```txt
+IDX_recipe_steps_recipe_step_number
+```
+
+Связь:
+
+```txt
+recipe_steps.recipe_id → recipes.id
+```
+
+Для шагов используется каскадное удаление, потому что шаг приготовления не имеет смысла без рецепта.
+<!-- RECIPES_DATABASE_STAGE_END -->
