@@ -548,3 +548,57 @@ GET /{apiPrefix}/recipes
 
 Это позволяет проверять оба сценария работы.
 <!-- RECIPE_INGREDIENTS_NUTRITION_STAGE_END -->
+
+<!-- RECIPES_FILTERS_SEARCH_STAGE_START -->
+## Обновление: фильтры и поиск рецептов
+
+Добавлена финальная доработка публичного API рецептов перед переходом к первому frontend MVP.
+
+Ручка списка рецептов теперь поддерживает query-параметры для фильтрации и поиска:
+
+```txt
+GET /{apiPrefix}/recipes
+```
+
+Если `apiPrefix=api`, фактический путь:
+
+```txt
+GET /api/recipes
+```
+
+Поддерживаемые query-параметры:
+
+- `category` — фильтр по `slug` категории;
+- `tag` — фильтр по `slug` тега;
+- `search` — поиск по названию и описанию рецепта;
+- `difficulty` — фильтр по сложности рецепта.
+
+Примеры запросов:
+
+```txt
+GET /api/recipes?category=breakfasts
+GET /api/recipes?tag=pp
+GET /api/recipes?search=овсянка
+GET /api/recipes?difficulty=easy
+GET /api/recipes?category=main-dishes&tag=pp&search=кур
+```
+
+Список рецептов остаётся лёгким.
+
+Ручка `GET /{apiPrefix}/recipes` не загружает:
+
+- `ingredients`;
+- `steps`.
+
+Она отдаёт только данные для карточек рецептов.
+
+Детальная информация по-прежнему доступна через:
+
+```txt
+GET /{apiPrefix}/recipes/:slug
+```
+
+Поиск на текущем этапе реализован через `ILIKE` по полям рецепта и подходит для MVP.
+
+Полнотекстовый морфологический поиск можно добавить отдельным этапом позже, когда рецептов станет больше.
+<!-- RECIPES_FILTERS_SEARCH_STAGE_END -->

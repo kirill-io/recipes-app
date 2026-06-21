@@ -1150,3 +1150,73 @@ Mapper/utils отвечают за:
 
 Это позволяет ручке списка рецептов отдавать актуальные КБЖУ без загрузки полного состава рецепта.
 <!-- RECIPE_INGREDIENTS_NUTRITION_ARCHITECTURE_STAGE_END -->
+
+<!-- RECIPES_FILTERS_SEARCH_ARCHITECTURE_STAGE_START -->
+## Обновление: фильтры и поиск в RecipesModule
+
+Для списка рецептов добавлен DTO query-параметров:
+
+```txt
+RecipesQueryDto
+```
+
+Он описывает параметры публичной ручки:
+
+```txt
+GET /{apiPrefix}/recipes
+```
+
+Поддерживаемые параметры:
+
+- `category`;
+- `tag`;
+- `search`;
+- `difficulty`.
+
+`RecipesController.findAll` принимает query-параметры через `@Query()` и передаёт их в `RecipesService.findAllPublished`.
+
+Для `findAllPublished` используется `QueryBuilder`, потому что фильтры требуют условий по связанным таблицам:
+
+- `categories`;
+- `recipe_tags`;
+- `tags`.
+
+Базовые условия списка рецептов:
+
+- рецепт активен;
+- рецепт имеет статус `PUBLISHED`;
+- категория рецепта активна.
+
+Фильтр по категории работает через:
+
+```txt
+category.slug
+```
+
+Фильтр по тегу работает через отдельный join-алиас фильтрации.
+
+Это нужно, чтобы рецепт отфильтровался по нужному тегу, но в ответе всё равно возвращались все активные теги рецепта, а не только тег, по которому выполнялась фильтрация.
+
+Список рецептов по-прежнему загружает только relations, необходимые для карточек:
+
+- `category`;
+- `recipeTags.tag`.
+
+Relations `recipeIngredients` и `steps` в списке не загружаются.
+
+Они используются только в детальной ручке:
+
+```txt
+GET /{apiPrefix}/recipes/:slug
+```
+
+Поиск реализован через `ILIKE` по полям:
+
+- `recipe.title`;
+- `recipe.short_description`;
+- `recipe.description`.
+
+Это простая реализация для MVP.
+
+Она не выполняет морфологический поиск, поэтому для проверки русских слов лучше использовать часть слова, например `кур`, а не только полную форму `курица`.
+<!-- RECIPES_FILTERS_SEARCH_ARCHITECTURE_STAGE_END -->

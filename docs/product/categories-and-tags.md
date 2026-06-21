@@ -307,3 +307,50 @@ recipe_tags
 
 Неактивные теги не попадают в массив `tags` у рецепта.
 <!-- RECIPES_TAGS_PRODUCT_STAGE_END -->
+
+<!-- RECIPES_FILTERS_SEARCH_PRODUCT_STAGE_START -->
+## Использование категорий и тегов в фильтрации рецептов
+
+Категории и теги теперь используются не только как справочники, но и как публичные фильтры каталога рецептов.
+
+Категория остаётся основным разделом рецепта.
+
+Через query-параметр `category` можно получить рецепты конкретного раздела:
+
+```txt
+GET /{apiPrefix}/recipes?category=breakfasts
+GET /{apiPrefix}/recipes?category=main-dishes
+```
+
+Если `apiPrefix=api`, фактические примеры:
+
+```txt
+GET /api/recipes?category=breakfasts
+GET /api/recipes?category=main-dishes
+```
+
+Теги используются как дополнительные признаки рецепта.
+
+Через query-параметр `tag` можно получить рецепты с конкретным тегом:
+
+```txt
+GET /{apiPrefix}/recipes?tag=pp
+GET /{apiPrefix}/recipes?tag=bystro
+GET /{apiPrefix}/recipes?tag=s-kuricey
+```
+
+Фильтры можно комбинировать:
+
+```txt
+GET /{apiPrefix}/recipes?category=main-dishes&tag=pp
+```
+
+Для MVP это даёт базовую механику каталога:
+
+- разделы по категориям;
+- быстрые фильтры по тегам;
+- поиск по рецептам;
+- фильтр по сложности.
+
+Такая структура подходит для первого frontend MVP: главная страница или каталог рецептов сможет получать категории, теги и список рецептов через публичные API.
+<!-- RECIPES_FILTERS_SEARCH_PRODUCT_STAGE_END -->

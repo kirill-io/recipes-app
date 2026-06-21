@@ -615,3 +615,48 @@ Swagger UI:
 - проверка Swagger DTO под frontend;
 - финальная проверка seed-данных для 3–5 полноценных рецептов.
 <!-- RECIPE_INGREDIENTS_NUTRITION_ROADMAP_STAGE_END -->
+
+<!-- RECIPES_FILTERS_SEARCH_ROADMAP_STAGE_START -->
+## Обновление roadmap: фильтры и поиск рецептов
+
+Завершён финальный backend-этап перед переходом к frontend MVP: добавлены фильтры и поиск для публичного списка рецептов.
+
+Сделано:
+
+- добавлен `RecipesQueryDto`;
+- `GET /{apiPrefix}/recipes` принимает query-параметры;
+- добавлен фильтр по категории через `category`;
+- добавлен фильтр по тегу через `tag`;
+- добавлен поиск через `search`;
+- добавлен фильтр по сложности через `difficulty`;
+- параметры можно комбинировать;
+- список рецептов оставлен лёгким без `ingredients` и `steps`;
+- Swagger/OpenAPI обновлён query-параметрами ручки рецептов.
+
+Текущий backend MVP готов для первого frontend-этапа.
+
+Минимальный frontend MVP может опираться на следующие публичные ручки:
+
+- `GET /{apiPrefix}/categories`;
+- `GET /{apiPrefix}/tags`;
+- `GET /{apiPrefix}/recipes`;
+- `GET /{apiPrefix}/recipes?category=...`;
+- `GET /{apiPrefix}/recipes?tag=...`;
+- `GET /{apiPrefix}/recipes?search=...`;
+- `GET /{apiPrefix}/recipes?difficulty=...`;
+- `GET /{apiPrefix}/recipes/:slug`.
+
+Если `apiPrefix=api`, фактические пути начинаются с `/api`.
+
+Что можно отложить после первого frontend MVP:
+
+- авторизация;
+- избранное;
+- создание рецептов через UI;
+- админка;
+- модерация;
+- роли;
+- загрузка изображений;
+- пагинация;
+- полнотекстовый морфологический поиск.
+<!-- RECIPES_FILTERS_SEARCH_ROADMAP_STAGE_END -->

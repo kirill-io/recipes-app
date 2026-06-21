@@ -637,3 +637,73 @@ Swagger/OpenAPI доступен по адресу:
 http://localhost:5000/api/docs
 ```
 <!-- RECIPE_INGREDIENTS_NUTRITION_API_STAGE_END -->
+
+<!-- RECIPES_FILTERS_SEARCH_API_STAGE_START -->
+## Query-параметры списка рецептов
+
+Публичная ручка списка рецептов поддерживает фильтры и поиск.
+
+```txt
+GET /{apiPrefix}/recipes
+```
+
+Если `apiPrefix=api`, фактический путь:
+
+```txt
+GET /api/recipes
+```
+
+Поддерживаемые query-параметры:
+
+| Параметр | Тип | Описание | Пример |
+|---|---|---|---|
+| `category` | `string` | `slug` категории | `breakfasts` |
+| `tag` | `string` | `slug` тега | `pp` |
+| `search` | `string` | Поиск по названию и описанию рецепта | `овсянка` |
+| `difficulty` | `RecipeDifficulty` | Сложность рецепта | `easy` |
+
+Примеры запросов:
+
+```txt
+GET /api/recipes?category=breakfasts
+GET /api/recipes?category=main-dishes
+GET /api/recipes?tag=pp
+GET /api/recipes?tag=s-tvorogom
+GET /api/recipes?search=овсянка
+GET /api/recipes?difficulty=easy
+GET /api/recipes?category=main-dishes&tag=pp&search=кур
+```
+
+Ожидаемое поведение на текущих seed-данных:
+
+- `category=breakfasts` возвращает рецепты из категории завтраков;
+- `category=main-dishes` возвращает основные блюда;
+- `tag=pp` возвращает рецепты с тегом `pp`;
+- `tag=s-tvorogom` возвращает рецепты с тегом `s-tvorogom`;
+- `search=овсянка` возвращает рецепты, где строка встречается в названии или описании;
+- `difficulty=easy` возвращает рецепты со сложностью `easy`.
+
+Параметры можно комбинировать.
+
+Условия работают через логическое `AND`: если переданы `category`, `tag` и `search`, рецепт должен соответствовать всем переданным условиям.
+
+Список рецептов остаётся лёгким.
+
+В ответе `GET /{apiPrefix}/recipes` не возвращаются:
+
+- `ingredients`;
+- `steps`;
+- полное описание рецепта.
+
+Для полной информации используется:
+
+```txt
+GET /{apiPrefix}/recipes/:slug
+```
+
+Swagger/OpenAPI доступен по адресу:
+
+```txt
+http://localhost:5000/api/docs
+```
+<!-- RECIPES_FILTERS_SEARCH_API_STAGE_END -->
