@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { RecipeCategoryResponseDto } from './dto/recipe-category-response.dto'
+import { RecipeIngredientResponseDto } from './dto/recipe-ingredient-response.dto'
 import { RecipeListItemResponseDto } from './dto/recipe-list-item-response.dto'
 import { RecipeResponseDto } from './dto/recipe-response.dto'
 import { RecipeStepResponseDto } from './dto/recipe-step-response.dto'
@@ -46,6 +47,10 @@ export class RecipesService {
         category: true,
         recipeTags: {
           tag: true,
+        },
+        recipeIngredients: {
+          ingredient: true,
+          unit: true,
         },
         steps: true,
       },
@@ -101,6 +106,7 @@ export class RecipesService {
       difficulty: recipe.difficulty,
       category: this.mapRecipeCategoryToResponseDto(recipe),
       tags: this.mapRecipeTagsToResponseDto(recipe),
+      ingredients: this.mapRecipeIngredientsToResponseDto(recipe),
       steps: this.mapRecipeStepsToResponseDto(recipe),
       nutritionCalculationMode: recipe.nutritionCalculationMode,
       caloriesPer100g: this.toNullableNumber(recipe.caloriesPer100g),
@@ -142,6 +148,50 @@ export class RecipesService {
           id: recipeTag.tag.id,
           name: recipeTag.tag.name,
           slug: recipeTag.tag.slug,
+        }),
+      )
+  }
+
+  private mapRecipeIngredientsToResponseDto(
+    recipe: Recipe,
+  ): RecipeIngredientResponseDto[] {
+    const recipeIngredients = [...(recipe.recipeIngredients ?? [])]
+
+    return recipeIngredients
+      .filter(
+        (recipeIngredient) =>
+          recipeIngredient.ingredient.isActive &&
+          recipeIngredient.unit.isActive,
+      )
+      .sort((firstRecipeIngredient, secondRecipeIngredient) => {
+        if (
+          firstRecipeIngredient.sortOrder !== secondRecipeIngredient.sortOrder
+        ) {
+          return (
+            firstRecipeIngredient.sortOrder - secondRecipeIngredient.sortOrder
+          )
+        }
+
+        return firstRecipeIngredient.ingredient.name.localeCompare(
+          secondRecipeIngredient.ingredient.name,
+        )
+      })
+      .map(
+        (recipeIngredient): RecipeIngredientResponseDto => ({
+          id: recipeIngredient.id,
+          ingredientId: recipeIngredient.ingredientId,
+          ingredientName: recipeIngredient.ingredient.name,
+          ingredientSlug: recipeIngredient.ingredient.slug,
+          unitId: recipeIngredient.unitId,
+          unitName: recipeIngredient.unit.name,
+          unitShortName: recipeIngredient.unit.shortName,
+          unitSlug: recipeIngredient.unit.slug,
+          amount: Number(recipeIngredient.amount),
+          grams: Number(recipeIngredient.grams),
+          displayName: recipeIngredient.displayName,
+          note: recipeIngredient.note,
+          groupTitle: recipeIngredient.groupTitle,
+          sortOrder: recipeIngredient.sortOrder,
         }),
       )
   }
