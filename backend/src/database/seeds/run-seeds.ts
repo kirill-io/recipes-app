@@ -17,6 +17,7 @@ import { recipeTagsSeedData } from './data/recipe-tags.seed'
 import { recipesSeedData } from './data/recipes.seed'
 import { tagsSeedData } from './data/tags.seed'
 import { unitsSeedData } from './data/units.seed'
+import { updateRecipesNutritionCache } from './update-recipes-nutrition-cache.seed'
 
 const runSeeds = async (): Promise<void> => {
   await dataSource.initialize()
@@ -180,6 +181,9 @@ const runSeeds = async (): Promise<void> => {
       'unitId',
     ])
 
+    const updatedRecipesNutritionCount =
+      await updateRecipesNutritionCache(dataSource)
+
     const ingredientUnitConversions = ingredientUnitConversionsSeedData.map(
       (conversion) => {
         const ingredient = ingredientBySlug.get(conversion.ingredientSlug)
@@ -223,6 +227,9 @@ const runSeeds = async (): Promise<void> => {
     console.log(`Recipe steps seed completed: ${recipeSteps.length}`)
     console.log(
       `Recipe ingredients seed completed: ${recipeIngredients.length}`,
+    )
+    console.log(
+      `Recipes nutrition cache updated: ${updatedRecipesNutritionCount}`,
     )
   } finally {
     await dataSource.destroy()
