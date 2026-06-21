@@ -1076,3 +1076,77 @@ onDelete: RESTRICT
 
 После добавления `recipe_ingredients` и расчёта КБЖУ маппинг лучше вынести в отдельный mapper-файл внутри модуля рецептов.
 <!-- RECIPES_MODULE_STAGE_END -->
+
+<!-- RECIPE_INGREDIENTS_NUTRITION_ARCHITECTURE_STAGE_START -->
+## Обновление: архитектура состава рецепта и расчёта КБЖУ
+
+В модуле рецептов добавлена сущность `RecipeIngredient`, которая описывает состав рецепта.
+
+Основные связи:
+
+- `Recipe` → `recipeIngredients`;
+- `RecipeIngredient` → `Recipe`;
+- `RecipeIngredient` → `Ingredient`;
+- `RecipeIngredient` → `Unit`.
+
+`RecipeIngredient` хранит:
+
+- `recipeId`;
+- `ingredientId`;
+- `unitId`;
+- `amount`;
+- `grams`;
+- `displayName`;
+- `note`;
+- `groupTitle`;
+- `sortOrder`.
+
+Поле `amount` отвечает за пользовательское количество в выбранной единице измерения.
+
+Поле `grams` хранит нормализованный вес ингредиента в граммах и используется для расчёта КБЖУ.
+
+### Разделение ответственности
+
+Маппинг рецептов вынесен из `RecipesService` в отдельный слой mapper/utils.
+
+`RecipesService` отвечает за:
+
+- сценарии получения данных;
+- работу с базой данных;
+- выбор нужных relations для списка и детальной страницы.
+
+Mapper/utils отвечают за:
+
+- преобразование entity в DTO;
+- расчёт КБЖУ;
+- подготовку публичного ответа.
+
+### Relations для детального рецепта
+
+Для детального рецепта используется загрузка relations:
+
+- `category`;
+- `recipeTags.tag`;
+- `recipeIngredients.ingredient`;
+- `recipeIngredients.unit`;
+- `steps`.
+
+### Relations для списка рецептов
+
+Для списка рецептов relations намеренно ограничены:
+
+- `category`;
+- `recipeTags.tag`.
+
+Список рецептов не загружает `recipeIngredients` и `steps`, чтобы оставаться лёгким для будущего frontend MVP.
+
+### Режимы расчёта
+
+Для рецептов в режиме `CALCULATED` реализован расчёт КБЖУ по ингредиентам.
+
+Для рецептов в режиме `MANUAL` используются значения, сохранённые напрямую в таблице `recipes`.
+
+После выполнения seed-скрипта дополнительно обновляется nutrition cache в таблице `recipes` для рецептов в режиме `CALCULATED`.
+
+Это позволяет ручке списка рецептов отдавать актуальные КБЖУ без загрузки полного состава рецепта.
+<!-- RECIPE_INGREDIENTS_NUTRITION_ARCHITECTURE_STAGE_END -->

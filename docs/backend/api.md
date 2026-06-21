@@ -532,3 +532,108 @@ GET /{apiPrefix}/recipes/:slug
 
 Неактивные теги не попадают в массив `tags`.
 <!-- RECIPES_API_STAGE_END -->
+
+<!-- RECIPE_INGREDIENTS_NUTRITION_API_STAGE_START -->
+## Ингредиенты и КБЖУ в API рецептов
+
+### Список рецептов
+
+```txt
+GET /{apiPrefix}/recipes
+```
+
+Если `apiPrefix=api`, фактический путь:
+
+```txt
+GET /api/recipes
+```
+
+Список рецептов остаётся лёгким и предназначен для карточек рецептов.
+
+В ответ списка входят:
+
+- базовые данные рецепта;
+- категория;
+- теги;
+- режим расчёта КБЖУ;
+- КБЖУ на 100 г.
+
+В ответ списка не входят:
+
+- `ingredients`;
+- `steps`;
+- детальное описание.
+
+КБЖУ в списке берутся из полей таблицы `recipes`.
+
+Для рецептов в режиме `CALCULATED` эти поля обновляются seed-пересчётом после заполнения `recipe_ingredients`.
+
+### Детальный рецепт
+
+```txt
+GET /{apiPrefix}/recipes/:slug
+```
+
+Если `apiPrefix=api`, фактический путь:
+
+```txt
+GET /api/recipes/:slug
+```
+
+Детальная ручка рецепта отдаёт полный рецепт.
+
+В ответ детального рецепта входят:
+
+- базовые данные рецепта;
+- категория;
+- теги;
+- ингредиенты;
+- шаги приготовления;
+- КБЖУ на 100 г;
+- КБЖУ всего;
+- КБЖУ на порцию;
+- общий вес ингредиентов;
+- готовый вес блюда.
+
+Добавлено поле:
+
+```ts
+ingredients: RecipeIngredientResponseDto[]
+```
+
+`RecipeIngredientResponseDto` содержит:
+
+```ts
+id: number
+ingredientId: number
+ingredientName: string
+ingredientSlug: string
+unitId: number
+unitName: string
+unitShortName: string
+unitSlug: string
+amount: number
+grams: number
+displayName: string | null
+note: string | null
+groupTitle: string | null
+sortOrder: number
+```
+
+Для рецептов в режиме `CALCULATED` КБЖУ в детальной ручке рассчитываются по ингредиентам.
+
+Для рецептов в режиме `MANUAL` КБЖУ берутся из ручных полей таблицы `recipes`.
+
+Пример проверочных URL:
+
+```txt
+http://localhost:5000/api/recipes
+http://localhost:5000/api/recipes/ovsyanka-s-bananom
+```
+
+Swagger/OpenAPI доступен по адресу:
+
+```txt
+http://localhost:5000/api/docs
+```
+<!-- RECIPE_INGREDIENTS_NUTRITION_API_STAGE_END -->

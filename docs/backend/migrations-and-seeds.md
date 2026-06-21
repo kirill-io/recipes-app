@@ -831,3 +831,77 @@ await recipeStepsRepository.upsert(recipeStepsToSave, [
 - тегов рецептов;
 - шагов рецептов.
 <!-- RECIPES_MIGRATION_SEED_STAGE_END -->
+
+<!-- RECIPE_INGREDIENTS_NUTRITION_MIGRATION_SEED_STAGE_START -->
+## Seed ингредиентов рецептов и пересчёт КБЖУ
+
+Добавлен seed для состава рецептов через таблицу:
+
+```txt
+recipe_ingredients
+```
+
+Файл с данными:
+
+```txt
+src/database/seeds/data/recipe-ingredients.seed.ts
+```
+
+В seed-данных используются slug-и рецептов, ингредиентов и единиц измерения:
+
+- `recipeSlug`;
+- `ingredientSlug`;
+- `unitSlug`.
+
+Во время выполнения seed-скрипта slug-и преобразуются в реальные `id` из базы данных.
+
+Для каждого ингредиента рецепта сохраняются:
+
+- `recipeId`;
+- `ingredientId`;
+- `unitId`;
+- `amount`;
+- `grams`;
+- `displayName`;
+- `note`;
+- `groupTitle`;
+- `sortOrder`.
+
+Записи добавляются через `upsert` по связке:
+
+```txt
+recipeId + ingredientId + unitId
+```
+
+После заполнения `recipe_ingredients` выполняется пересчёт nutrition cache для рецептов в режиме `CALCULATED`.
+
+Добавлен отдельный helper seed-слоя:
+
+```txt
+src/database/seeds/update-recipes-nutrition-cache.seed.ts
+```
+
+Он:
+
+1. загружает рецепты в режиме `CALCULATED`;
+2. загружает их `recipeIngredients.ingredient`;
+3. рассчитывает КБЖУ через общий helper расчёта;
+4. обновляет поля КБЖУ в таблице `recipes`.
+
+Рецепты в режиме `MANUAL` этим пересчётом не изменяются.
+
+Проверочный запуск:
+
+```bash
+yarn --cwd backend seed:run
+```
+
+Ожидаемый результат для текущих стартовых данных:
+
+```txt
+Recipe ingredients seed completed: 15
+Recipes nutrition cache updated: 3
+```
+
+Количество `3` означает, что пересчитаны только рецепты в режиме `CALCULATED`.
+<!-- RECIPE_INGREDIENTS_NUTRITION_MIGRATION_SEED_STAGE_END -->
