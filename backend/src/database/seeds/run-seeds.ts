@@ -2,6 +2,7 @@ import { Category } from '../../modules/categories/entities/category.entity'
 import { IngredientUnitConversion } from '../../modules/ingredient-unit-conversions/entities/ingredient-unit-conversion.entity'
 import { Ingredient } from '../../modules/ingredients/entities/ingredient.entity'
 import { Recipe } from '../../modules/recipes/entities/recipe.entity'
+import { RecipeIngredient } from '../../modules/recipes/entities/recipe-ingredient.entity'
 import { RecipeStep } from '../../modules/recipes/entities/recipe-step.entity'
 import { RecipeTag } from '../../modules/recipes/entities/recipe-tag.entity'
 import { Tag } from '../../modules/tags/entities/tag.entity'
@@ -10,6 +11,7 @@ import dataSource from '../data-source'
 import { categoriesSeedData } from './data/categories.seed'
 import { ingredientUnitConversionsSeedData } from './data/ingredient-unit-conversions.seed'
 import { ingredientsSeedData } from './data/ingredients.seed'
+import { recipeIngredientsSeedData } from './data/recipe-ingredients.seed'
 import { recipeStepsSeedData } from './data/recipe-steps.seed'
 import { recipeTagsSeedData } from './data/recipe-tags.seed'
 import { recipesSeedData } from './data/recipes.seed'
@@ -26,6 +28,8 @@ const runSeeds = async (): Promise<void> => {
     )
     const ingredientsRepository = dataSource.getRepository(Ingredient)
     const recipesRepository = dataSource.getRepository(Recipe)
+    const recipeIngredientsRepository =
+      dataSource.getRepository(RecipeIngredient)
     const tagsRepository = dataSource.getRepository(Tag)
     const unitsRepository = dataSource.getRepository(Unit)
     const recipeTagsRepository = dataSource.getRepository(RecipeTag)
@@ -132,6 +136,50 @@ const runSeeds = async (): Promise<void> => {
 
     await recipeTagsRepository.upsert(recipeTags, ['recipeId', 'tagId'])
 
+    const recipeIngredients = recipeIngredientsSeedData.map(
+      (recipeIngredient) => {
+        const recipe = recipeBySlug.get(recipeIngredient.recipeSlug)
+        const ingredient = ingredientBySlug.get(recipeIngredient.ingredientSlug)
+        const unit = unitBySlug.get(recipeIngredient.unitSlug)
+
+        if (!recipe) {
+          throw new Error(
+            `Recipe not found by slug: ${recipeIngredient.recipeSlug}`,
+          )
+        }
+
+        if (!ingredient) {
+          throw new Error(
+            `Ingredient not found by slug: ${recipeIngredient.ingredientSlug}`,
+          )
+        }
+
+        if (!unit) {
+          throw new Error(
+            `Unit not found by slug: ${recipeIngredient.unitSlug}`,
+          )
+        }
+
+        return {
+          recipeId: recipe.id,
+          ingredientId: ingredient.id,
+          unitId: unit.id,
+          amount: recipeIngredient.amount,
+          grams: recipeIngredient.grams,
+          displayName: recipeIngredient.displayName,
+          note: recipeIngredient.note,
+          groupTitle: recipeIngredient.groupTitle,
+          sortOrder: recipeIngredient.sortOrder,
+        }
+      },
+    )
+
+    await recipeIngredientsRepository.upsert(recipeIngredients, [
+      'recipeId',
+      'ingredientId',
+      'unitId',
+    ])
+
     const ingredientUnitConversions = ingredientUnitConversionsSeedData.map(
       (conversion) => {
         const ingredient = ingredientBySlug.get(conversion.ingredientSlug)
@@ -173,6 +221,9 @@ const runSeeds = async (): Promise<void> => {
     )
     console.log(`Recipe tags seed completed: ${recipeTags.length}`)
     console.log(`Recipe steps seed completed: ${recipeSteps.length}`)
+    console.log(
+      `Recipe ingredients seed completed: ${recipeIngredients.length}`,
+    )
   } finally {
     await dataSource.destroy()
   }

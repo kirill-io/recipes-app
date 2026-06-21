@@ -1,4 +1,3 @@
-import { Category } from '@modules/categories/entities'
 import {
   Column,
   CreateDateColumn,
@@ -10,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { Category } from '../../categories/entities'
 import {
   NutritionCalculationMode,
   RecipeDifficulty,

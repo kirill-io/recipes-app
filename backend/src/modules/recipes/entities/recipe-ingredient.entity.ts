@@ -1,5 +1,3 @@
-import { Ingredient } from '@modules/ingredients/entities'
-import { Unit } from '@modules/units/entities'
 import {
   Column,
   CreateDateColumn,
@@ -10,6 +8,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { Ingredient } from '../../ingredients/entities'
+import { Unit } from '../../units/entities'
 import { Recipe } from './recipe.entity'
 
 @Entity('recipe_ingredients')
