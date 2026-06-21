@@ -1,11 +1,15 @@
-import { Controller, Get, Param } from '@nestjs/common'
+import { Controller, Get, Param, Query } from '@nestjs/common'
 import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger'
-import { RecipeListItemResponseDto, RecipeResponseDto } from './dto'
+import {
+  RecipeListItemResponseDto,
+  RecipeResponseDto,
+  RecipesQueryDto,
+} from './dto'
 import { RecipesService } from './recipes.service'
 
 @ApiTags('recipes')
@@ -21,8 +25,10 @@ export class RecipesController {
     description: 'Список опубликованных рецептов',
     type: [RecipeListItemResponseDto],
   })
-  async findAll(): Promise<RecipeListItemResponseDto[]> {
-    return this.recipesService.findAllPublished()
+  async findAll(
+    @Query() query: RecipesQueryDto,
+  ): Promise<RecipeListItemResponseDto[]> {
+    return this.recipesService.findAllPublished(query)
   }
 
   @Get(':slug')

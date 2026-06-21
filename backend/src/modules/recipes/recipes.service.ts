@@ -1,7 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
-import { RecipeListItemResponseDto, RecipeResponseDto } from './dto'
+import { Brackets, Repository } from 'typeorm'
+import {
+  RecipeListItemResponseDto,
+  RecipeResponseDto,
+  RecipesQueryDto,
+} from './dto'
 import { Recipe } from './entities'
 import { RecipeStatus } from './enums'
 import {
@@ -16,26 +20,74 @@ export class RecipesService {
     private readonly recipesRepository: Repository<Recipe>,
   ) {}
 
-  async findAllPublished(): Promise<RecipeListItemResponseDto[]> {
-    const recipes = await this.recipesRepository.find({
-      relations: {
-        category: true,
-        recipeTags: {
-          tag: true,
-        },
-      },
-      where: {
-        isActive: true,
+  async findAllPublished(
+    query: RecipesQueryDto = {},
+  ): Promise<RecipeListItemResponseDto[]> {
+    const categorySlug = query.category?.trim()
+    const tagSlug = query.tag?.trim()
+    const searchValue = query.search?.trim()
+    const difficulty = query.difficulty
+
+    const recipesQueryBuilder = this.recipesRepository
+      .createQueryBuilder('recipe')
+      .leftJoinAndSelect('recipe.category', 'category')
+      .leftJoinAndSelect('recipe.recipeTags', 'recipeTag')
+      .leftJoinAndSelect('recipeTag.tag', 'tag')
+      .where('recipe.is_active = :isActive', { isActive: true })
+      .andWhere('recipe.status = :status', {
         status: RecipeStatus.PUBLISHED,
-        category: {
-          isActive: true,
-        },
-      },
-      order: {
-        sortOrder: 'ASC',
-        title: 'ASC',
-      },
-    })
+      })
+      .andWhere('category.is_active = :categoryIsActive', {
+        categoryIsActive: true,
+      })
+
+    if (categorySlug) {
+      recipesQueryBuilder.andWhere('category.slug = :categorySlug', {
+        categorySlug,
+      })
+    }
+
+    if (tagSlug) {
+      recipesQueryBuilder
+        .innerJoin('recipe.recipeTags', 'filteredRecipeTag')
+        .innerJoin('filteredRecipeTag.tag', 'filteredTag')
+        .andWhere('filteredTag.slug = :tagSlug', { tagSlug })
+        .andWhere('filteredTag.is_active = :filteredTagIsActive', {
+          filteredTagIsActive: true,
+        })
+    }
+
+    if (searchValue) {
+      const searchPattern = `%${searchValue}%`
+
+      recipesQueryBuilder.andWhere(
+        new Brackets((searchQueryBuilder) => {
+          searchQueryBuilder
+            .where('recipe.title ILIKE :searchPattern', {
+              searchPattern,
+            })
+            .orWhere('recipe.short_description ILIKE :searchPattern', {
+              searchPattern,
+            })
+            .orWhere('recipe.description ILIKE :searchPattern', {
+              searchPattern,
+            })
+        }),
+      )
+    }
+
+    if (difficulty) {
+      recipesQueryBuilder.andWhere('recipe.difficulty = :difficulty', {
+        difficulty,
+      })
+    }
+
+    const recipes = await recipesQueryBuilder
+      .orderBy('recipe.sort_order', 'ASC')
+      .addOrderBy('recipe.title', 'ASC')
+      .addOrderBy('recipeTag.sort_order', 'ASC')
+      .addOrderBy('tag.name', 'ASC')
+      .getMany()
 
     return recipes.map(mapRecipeToListItemResponseDto)
   }
