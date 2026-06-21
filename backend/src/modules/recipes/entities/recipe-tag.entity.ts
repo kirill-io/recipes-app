@@ -1,3 +1,4 @@
+import { Tag } from '@modules/tags/entities'
 import {
   Column,
   CreateDateColumn,
@@ -8,7 +9,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { Tag } from '../../tags/entities/tag.entity'
 import { Recipe } from './recipe.entity'
 
 @Entity('recipe_tags')

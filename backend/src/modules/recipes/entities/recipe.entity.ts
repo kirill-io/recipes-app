@@ -1,3 +1,4 @@
+import { Category } from '@modules/categories/entities'
 import {
   Column,
   CreateDateColumn,
@@ -9,10 +10,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { Category } from '../../categories/entities/category.entity'
-import { NutritionCalculationMode } from '../enums/nutrition-calculation-mode.enum'
-import { RecipeDifficulty } from '../enums/recipe-difficulty.enum'
-import { RecipeStatus } from '../enums/recipe-status.enum'
+import {
+  NutritionCalculationMode,
+  RecipeDifficulty,
+  RecipeStatus,
+} from '../enums'
 import { RecipeIngredient } from './recipe-ingredient.entity'
 import { RecipeStep } from './recipe-step.entity'
 import { RecipeTag } from './recipe-tag.entity'

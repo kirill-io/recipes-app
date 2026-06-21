@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { NutritionCalculationMode } from '../enums/nutrition-calculation-mode.enum'
-import { RecipeDifficulty } from '../enums/recipe-difficulty.enum'
+import { NutritionCalculationMode, RecipeDifficulty } from '../enums'
 import { RecipeCategoryResponseDto } from './recipe-category-response.dto'
 import { RecipeIngredientResponseDto } from './recipe-ingredient-response.dto'
 import { RecipeStepResponseDto } from './recipe-step-response.dto'
@@ -126,6 +125,34 @@ export class RecipeResponseDto {
   carbohydratesPer100g!: number | null
 
   @ApiProperty({
+    example: 310,
+    description: 'Калории на порцию',
+    nullable: true,
+  })
+  caloriesPerServing!: number | null
+
+  @ApiProperty({
+    example: 32.6,
+    description: 'Белки на порцию',
+    nullable: true,
+  })
+  proteinsPerServing!: number | null
+
+  @ApiProperty({
+    example: 7.4,
+    description: 'Жиры на порцию',
+    nullable: true,
+  })
+  fatsPerServing!: number | null
+
+  @ApiProperty({
+    example: 29.2,
+    description: 'Углеводы на порцию',
+    nullable: true,
+  })
+  carbohydratesPerServing!: number | null
+
+  @ApiProperty({
     example: 620,
     description: 'Калории всего на рецепт',
     nullable: true,
@@ -152,6 +179,13 @@ export class RecipeResponseDto {
     nullable: true,
   })
   carbohydratesTotal!: number | null
+
+  @ApiProperty({
+    example: 520,
+    description: 'Общий вес ингредиентов до приготовления в граммах',
+    nullable: true,
+  })
+  totalIngredientsWeightGrams!: number | null
 
   @ApiProperty({
     example: 460,

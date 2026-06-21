@@ -5,8 +5,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger'
-import { RecipeListItemResponseDto } from './dto/recipe-list-item-response.dto'
-import { RecipeResponseDto } from './dto/recipe-response.dto'
+import { RecipeListItemResponseDto, RecipeResponseDto } from './dto'
 import { RecipesService } from './recipes.service'
 
 @ApiTags('recipes')
