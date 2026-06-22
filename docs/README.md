@@ -602,3 +602,82 @@ GET /{apiPrefix}/recipes/:slug
 
 Полнотекстовый морфологический поиск можно добавить отдельным этапом позже, когда рецептов станет больше.
 <!-- RECIPES_FILTERS_SEARCH_STAGE_END -->
+
+<!-- FRONTEND_INFRASTRUCTURE_STAGE_START -->
+## Обновление: frontend MVP и базовая инфраструктура
+
+После завершения backend MVP начат первый frontend-этап сайта рецептов.
+
+Backend уже предоставляет публичные ручки для каталога рецептов, поэтому frontend строится как публичное Next.js-приложение для:
+
+- просмотра рецептов;
+- фильтрации каталога;
+- поиска рецептов;
+- просмотра детальной страницы рецепта.
+
+Для frontend выбран стек:
+
+- Next.js App Router;
+- React;
+- TypeScript;
+- Tailwind CSS;
+- shadcn/ui;
+- React Hook Form;
+- Zod;
+- `@hookform/resolvers`;
+- TanStack Query;
+- `nuqs`;
+- `sonner`;
+- `lucide-react`.
+
+От FSD на этапе MVP сознательно отказались.
+
+Для первого frontend MVP выбрана более простая прикладная структура:
+
+```txt
+src/app
+src/components
+src/lib
+src/types
+src/providers
+src/hooks
+```
+
+Frontend создан в папке:
+
+```txt
+frontend
+```
+
+Проект использует Yarn v1.
+
+Backend и frontend остаются отдельными приложениями внутри одного репозитория. Проект не переводится на Yarn workspaces.
+
+В корневой `package.json` добавлены proxy-скрипты для запуска и проверки frontend из корня репозитория.
+
+Базово настроены:
+
+- frontend scripts для `dev`, `build`, `start`, `lint`, `lint:fix`, `typegen`, `typecheck`, `format`, `format:check`, `validate`;
+- root scripts для `dev:front`, `build:front`, `lint:front`, `typecheck:front`, `format:front`, `validate:front`;
+- Prettier;
+- ESLint;
+- `eslint-config-prettier`;
+- VS Code workspace settings;
+- `.editorconfig`;
+- shadcn/ui с пресетом `radix-nova`;
+- Turbopack root в `next.config.ts`, чтобы убрать предупреждение Next.js о нескольких lock-файлах.
+
+Текущий frontend-этап является инфраструктурным.
+
+Следующий этап:
+
+- добавить `.env.example` для frontend;
+- настроить `NEXT_PUBLIC_API_URL=http://localhost:5000/api`;
+- создать базовый API client;
+- описать DTO-типы;
+- подключить первые публичные ручки backend:
+  - `GET /api/categories`;
+  - `GET /api/tags`;
+  - `GET /api/recipes`;
+  - `GET /api/recipes/:slug`.
+<!-- FRONTEND_INFRASTRUCTURE_STAGE_END -->

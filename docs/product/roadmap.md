@@ -660,3 +660,65 @@ Swagger UI:
 - пагинация;
 - полнотекстовый морфологический поиск.
 <!-- RECIPES_FILTERS_SEARCH_ROADMAP_STAGE_END -->
+
+<!-- FRONTEND_INFRASTRUCTURE_ROADMAP_STAGE_START -->
+## Обновление roadmap: старт frontend MVP
+
+После завершения backend MVP начат frontend MVP.
+
+Текущий статус frontend:
+
+- создано Next.js-приложение в папке `frontend`;
+- выбран App Router;
+- выбран TypeScript;
+- подключён Tailwind CSS;
+- подключён shadcn/ui с пресетом `radix-nova`;
+- добавлены базовые shadcn-компоненты:
+  - `button`;
+  - `input`;
+  - `card`;
+  - `badge`;
+  - `skeleton`;
+  - `separator`;
+  - `sonner`;
+- выбран React Hook Form вместо Formik для будущих форм;
+- добавлены Zod и `@hookform/resolvers` для типизированной валидации;
+- добавлен TanStack Query для будущих клиентских сценариев и мутаций;
+- добавлен `nuqs` для URL query-параметров фильтров;
+- добавлены `sonner` и `lucide-react`;
+- настроены ESLint, Prettier, TypeScript-проверка, форматирование и validate-команды;
+- добавлены root scripts для запуска и проверки frontend из корня проекта;
+- FSD на этапе MVP не используется, выбрана более простая структура проекта.
+
+Ближайшие frontend-задачи:
+
+1. Добавить `.env.example` для frontend.
+2. Настроить `NEXT_PUBLIC_API_URL=http://localhost:5000/api`.
+3. Создать базовый API client.
+4. Описать DTO-типы:
+   - `Category`;
+   - `Tag`;
+   - `RecipeListItem`;
+   - `RecipeDetail`.
+5. Подключить `GET /api/categories`.
+6. Подключить `GET /api/tags`.
+7. Подключить `GET /api/recipes`.
+8. Собрать первую страницу каталога рецептов.
+9. Добавить фильтры:
+   - `category`;
+   - `tag`;
+   - `search`;
+   - `difficulty`.
+10. Добавить детальную страницу `/recipes/[slug]`.
+
+Backend MVP для этого уже готов и предоставляет публичные ручки:
+
+- `GET /api/categories`;
+- `GET /api/tags`;
+- `GET /api/recipes`;
+- `GET /api/recipes?category=...`;
+- `GET /api/recipes?tag=...`;
+- `GET /api/recipes?search=...`;
+- `GET /api/recipes?difficulty=...`;
+- `GET /api/recipes/:slug`.
+<!-- FRONTEND_INFRASTRUCTURE_ROADMAP_STAGE_END -->
