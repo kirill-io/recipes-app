@@ -7,10 +7,25 @@
   "license": "MIT",
   "scripts": {
     "install:back": "yarn --cwd backend install",
+    "install:front": "yarn --cwd frontend install",
+    "install:all": "yarn install && yarn install:back && yarn install:front",
+    "dev": "concurrently -n BACK,FRONT -c blue,green \"yarn dev:back\" \"yarn dev:front\"",
     "dev:back": "yarn --cwd backend start:dev",
+    "dev:front": "yarn --cwd frontend dev",
     "start:back": "yarn --cwd backend start",
+    "start:front": "yarn --cwd frontend start",
+    "build": "yarn build:back && yarn build:front",
     "build:back": "yarn --cwd backend build",
-    "lint:back": "yarn --cwd backend lint"
+    "build:front": "yarn --cwd frontend build",
+    "lint": "yarn lint:back && yarn lint:front",
+    "lint:back": "yarn --cwd backend lint",
+    "lint:front": "yarn --cwd frontend lint",
+    "lint:front:fix": "yarn --cwd frontend lint:fix",
+    "typecheck:front": "yarn --cwd frontend typecheck",
+    "format:front": "yarn --cwd frontend format",
+    "format:front:check": "yarn --cwd frontend format:check",
+    "validate:front": "yarn --cwd frontend validate",
+    "validate": "yarn lint && yarn typecheck:front && yarn format:front:check"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"
