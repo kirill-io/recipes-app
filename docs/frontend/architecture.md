@@ -114,3 +114,127 @@ GET /api/recipes?difficulty=...
 
 Для работы с query-параметрами выбран `nuqs`.
 <!-- FRONTEND_ARCHITECTURE_STAGE_END -->
+
+<!-- FRONTEND_STYLES_ARCHITECTURE_STAGE_START -->
+## Архитектура глобальных стилей
+
+Для frontend принята отдельная структура глобальных стилей:
+
+```txt
+src/styles/
+  globals.css
+  theme.css
+  base.css
+```
+
+### `globals.css`
+
+`src/styles/globals.css` — единая точка входа глобальных CSS-стилей.
+
+Он подключается один раз в `src/app/layout.tsx`:
+
+```ts
+import '@/styles/globals.css'
+```
+
+Внутри `globals.css` подключаются Tailwind, shadcn и внутренние CSS-файлы проекта:
+
+```css
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@import './theme.css';
+@import './base.css';
+```
+
+Назначение импортов:
+
+- `tailwindcss` — подключает Tailwind CSS v4;
+- `tw-animate-css` — добавляет animation utilities, которые используются shadcn-компонентами;
+- `shadcn/tailwind.css` — подключает shared Tailwind v4 utilities для выбранного shadcn preset `radix-nova`;
+- `theme.css` — хранит дизайн-токены и light/dark темы;
+- `base.css` — хранит базовые стили приложения.
+
+### `theme.css`
+
+`src/styles/theme.css` отвечает за дизайн-токены.
+
+В нём используется:
+
+```css
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+Это задаёт работу Tailwind-варианта `dark:` через CSS-класс `.dark`.
+
+Также используется блок:
+
+```css
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+```
+
+`@theme inline` связывает CSS-переменные проекта с Tailwind utility-классами.
+
+Например, после объявления `--color-background` можно использовать классы:
+
+```txt
+bg-background
+text-background
+border-background
+```
+
+Реальные значения цветов хранятся в:
+
+- `:root` — светлая тема по умолчанию;
+- `.dark` — значения переменных для тёмной темы.
+
+Цвета называются по роли в интерфейсе, а не по конкретному оттенку.
+
+Примеры токенов:
+
+- `--background`;
+- `--foreground`;
+- `--card`;
+- `--primary`;
+- `--muted`;
+- `--border`;
+- `--brand`;
+- `--success`.
+
+Такой подход позволяет использовать один и тот же класс в компонентах:
+
+```tsx
+<div className="bg-card text-card-foreground border border-border" />
+```
+
+и получать разные значения в светлой и тёмной теме.
+
+### `base.css`
+
+`src/styles/base.css` содержит только базовые правила всего приложения:
+
+- `html`;
+- `body`;
+- `a`;
+- `button`;
+- `input`;
+- `textarea`;
+- `select`;
+- `::selection`.
+
+На этом этапе не используется агрессивный reset списков, заголовков и параграфов.
+
+Tailwind уже подключает свой базовый слой, а списки ингредиентов и шагов рецепта могут быть нужны как настоящие семантические списки.
+
+Принятое правило: стили конкретных компонентов не добавлять в `base.css`.
+
+Для компонентов использовать:
+
+- Tailwind-классы;
+- shadcn/ui;
+- при необходимости CSS Modules.
+<!-- FRONTEND_STYLES_ARCHITECTURE_STAGE_END -->

@@ -231,3 +231,151 @@ import 'shadcn/tailwind.css'
 }
 ```
 <!-- FRONTEND_TOOLING_STAGE_END -->
+
+<!-- FRONTEND_FONTS_AND_THEME_TOOLING_STAGE_START -->
+## Шрифты и тема frontend
+
+### Подключение шрифта
+
+Для подключения шрифтов используется встроенный механизм Next.js:
+
+```txt
+next/font
+```
+
+Выбран основной шрифт интерфейса:
+
+```txt
+Nunito Sans
+```
+
+Причины выбора:
+
+- мягче и дружелюбнее, чем Inter;
+- подходит для рецептурного/food-интерфейса;
+- поддерживает кириллицу;
+- хорошо читается в интерфейсах, карточках, фильтрах и описаниях рецептов.
+
+Конфигурация шрифта хранится в:
+
+```txt
+src/config/fonts.ts
+```
+
+Пример:
+
+```ts
+import { Nunito_Sans } from 'next/font/google'
+
+export const nunitoSans = Nunito_Sans({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-nunito-sans',
+  display: 'swap',
+})
+```
+
+Файл находится в `src/config`, а не в `src/styles`, потому что `next/font` — это TypeScript-конфигурация Next.js, а не CSS-файл.
+
+В `layout.tsx` шрифт подключается через CSS-переменную:
+
+```tsx
+<html lang="ru" className={nunitoSans.variable}>
+  <body>{children}</body>
+</html>
+```
+
+В `theme.css` шрифт пробрасывается в Tailwind:
+
+```css
+@theme inline {
+  --font-sans: var(--font-nunito-sans);
+}
+```
+
+В `base.css` основной шрифт применяется к `body`:
+
+```css
+body {
+  font-family: var(--font-nunito-sans), system-ui, sans-serif;
+}
+```
+
+### Тема и цвета
+
+Цвета вынесены в:
+
+```txt
+src/styles/theme.css
+```
+
+Используется связка:
+
+```txt
+CSS variables + Tailwind @theme inline + light/dark themes
+```
+
+Семантические токены:
+
+- `background`;
+- `foreground`;
+- `card`;
+- `card-foreground`;
+- `popover`;
+- `popover-foreground`;
+- `primary`;
+- `primary-foreground`;
+- `secondary`;
+- `secondary-foreground`;
+- `muted`;
+- `muted-foreground`;
+- `accent`;
+- `accent-foreground`;
+- `destructive`;
+- `border`;
+- `input`;
+- `ring`;
+- `brand`;
+- `brand-soft`;
+- `success`;
+- `surface-1`;
+- `surface-2`.
+
+`@theme inline` нужен, чтобы Tailwind создавал utility-классы на основе токенов:
+
+```txt
+bg-background
+text-foreground
+bg-card
+text-card-foreground
+border-border
+bg-brand
+text-success
+```
+
+Светлая тема находится в `:root`.
+
+Тёмная тема находится в `.dark`.
+
+### Правило расширения темы
+
+Если цвет нужен только в CSS через `var(...)`, достаточно добавить его в:
+
+- `:root`;
+- `.dark`.
+
+Если цвет нужен как Tailwind-класс, например `bg-warning`, нужно добавить его в три места:
+
+```css
+@theme inline {
+  --color-warning: var(--warning);
+}
+
+:root {
+  --warning: #f59e0b;
+}
+
+.dark {
+  --warning: #f59e0b;
+}
+```
+<!-- FRONTEND_FONTS_AND_THEME_TOOLING_STAGE_END -->

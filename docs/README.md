@@ -681,3 +681,81 @@ Backend и frontend остаются отдельными приложениям
   - `GET /api/recipes`;
   - `GET /api/recipes/:slug`.
 <!-- FRONTEND_INFRASTRUCTURE_STAGE_END -->
+
+<!-- FRONTEND_DESIGN_SYSTEM_STAGE_START -->
+## Обновление: базовая дизайн-система frontend
+
+Во frontend начата настройка базовой дизайн-системы для MVP.
+
+Сделано:
+
+- очищен стартовый шаблон Next.js;
+- `src/app/page.tsx` оставлен как минимальная стартовая страница;
+- `src/app/layout.tsx` очищен от стандартных metadata и демо-шрифтов Next.js;
+- глобальные стили вынесены из `src/app/globals.css` в `src/styles/globals.css`;
+- `src/styles/globals.css` используется как единая точка входа глобальных стилей;
+- добавлен `src/styles/theme.css` для CSS-переменных, Tailwind theme tokens и light/dark темы;
+- добавлен `src/styles/base.css` для базовых правил `html`, `body`, `a`, `button`, `input`, `textarea`, `select`;
+- подключён шрифт через `next/font/google`;
+- конфигурация шрифта вынесена в `src/config/fonts.ts`;
+- выбран `Nunito Sans` как основной шрифт интерфейса;
+- в `layout.tsx` подключается CSS-переменная шрифта через `className={nunitoSans.variable}`;
+- в `theme.css` шрифт проброшен в Tailwind через `--font-sans`.
+
+Принята структура:
+
+```txt
+frontend/src/
+  app/
+    layout.tsx
+    page.tsx
+
+  config/
+    fonts.ts
+
+  styles/
+    globals.css
+    theme.css
+    base.css
+```
+
+Папка `styles` содержит только CSS-файлы.
+
+TypeScript-конфигурация шрифтов хранится в:
+
+```txt
+src/config/fonts.ts
+```
+
+Это сделано потому, что `next/font` — это не обычный CSS, а конфигурация Next.js.
+
+Цвета заведены как семантические токены, а не как переменные по названию конкретного цвета.
+
+Основные токены:
+
+- `background`;
+- `foreground`;
+- `card`;
+- `card-foreground`;
+- `primary`;
+- `primary-foreground`;
+- `secondary`;
+- `muted`;
+- `accent`;
+- `border`;
+- `input`;
+- `ring`;
+- `brand`;
+- `brand-soft`;
+- `success`;
+- `surface-1`;
+- `surface-2`.
+
+Такой подход позволит удобно поддерживать светлую и тёмную темы без переписывания компонентов.
+
+Следующий frontend-шаг — продолжить настройку UI-основы:
+
+- подключить переключение темы;
+- завести базовые layout-компоненты;
+- перейти к API client, DTO и первым данным из backend.
+<!-- FRONTEND_DESIGN_SYSTEM_STAGE_END -->

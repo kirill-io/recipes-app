@@ -722,3 +722,35 @@ Backend MVP для этого уже готов и предоставляет п
 - `GET /api/recipes?difficulty=...`;
 - `GET /api/recipes/:slug`.
 <!-- FRONTEND_INFRASTRUCTURE_ROADMAP_STAGE_END -->
+
+<!-- FRONTEND_DESIGN_SYSTEM_ROADMAP_STAGE_START -->
+## Обновление roadmap: frontend дизайн-система
+
+В рамках frontend MVP начата базовая дизайн-система.
+
+Выполнено:
+
+- очищен стартовый Next.js-шаблон;
+- глобальные стили вынесены в `src/styles`;
+- создана единая точка входа `src/styles/globals.css`;
+- создан `src/styles/theme.css` с семантическими CSS-переменными;
+- заведены базовые light/dark токены;
+- добавлен `src/styles/base.css` для базовых стилей приложения;
+- подключён основной шрифт `Nunito Sans`;
+- конфигурация шрифта вынесена в `src/config/fonts.ts`;
+- `layout` очищен и подключает только глобальные стили и CSS-переменную шрифта.
+
+Следующие задачи:
+
+1. Настроить переключение светлой и тёмной темы.
+2. Завести базовые layout-компоненты.
+3. Подключить frontend `.env.example`.
+4. Настроить `NEXT_PUBLIC_API_URL`.
+5. Создать API client.
+6. Описать DTO-типы backend-ответов.
+7. Получить первые данные из:
+   - `GET /api/categories`;
+   - `GET /api/tags`;
+   - `GET /api/recipes`.
+8. Начать страницу каталога рецептов.
+<!-- FRONTEND_DESIGN_SYSTEM_ROADMAP_STAGE_END -->
