@@ -1,0 +1,161 @@
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  /* Базовые цвета приложения */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* Карточки: карточки рецептов, блоки ингредиентов, блоки КБЖУ */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  /* Всплывающие элементы: select, dropdown, popover, tooltip */
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  /* Основной акцент: главные кнопки, активные элементы, CTA */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  /* Второстепенные элементы: вторичные кнопки, спокойные плашки */
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  /* Приглушённые элементы: описания, placeholder, вторичный текст */
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  /* Мягкий акцент: активные фильтры, hover-состояния, бейджи */
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  /* Ошибки и опасные действия */
+  --color-destructive: var(--destructive);
+
+  /* Границы, поля ввода и focus ring */
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Брендовые цвета проекта ВкусноТут */
+  --color-brand: var(--brand);
+  --color-brand-soft: var(--brand-soft);
+
+  /* Статусные цвета: сложность, успешные состояния */
+  --color-success: var(--success);
+
+  /* Дополнительные поверхности интерфейса */
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+
+  /* Радиусы скруглений */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+:root {
+  /* Основной фон приложения и основной текст */
+  --background: #fffaf5;
+  --foreground: #1f1f1f;
+
+  /* Карточки рецептов и текст внутри карточек */
+  --card: #ffffff;
+  --card-foreground: #1f1f1f;
+
+  /* Выпадающие элементы: select, menu, popover */
+  --popover: #ffffff;
+  --popover-foreground: #1f1f1f;
+
+  /* Основной акцент: кнопки, активные вкладки, важные действия */
+  --primary: #ff7a1a;
+  --primary-foreground: #ffffff;
+
+  /* Второстепенные элементы интерфейса */
+  --secondary: #f5f1eb;
+  --secondary-foreground: #2a2825;
+
+  /* Приглушённый фон и вторичный текст */
+  --muted: #f6f2ec;
+  --muted-foreground: #706b66;
+
+  /* Мягкий акцент для бейджей и hover-состояний */
+  --accent: #fff1e6;
+  --accent-foreground: #c9500a;
+
+  /* Ошибки, удаление, опасные действия */
+  --destructive: #dc2626;
+
+  /* Границы, поля ввода, focus ring */
+  --border: #eadfd4;
+  --input: #eadfd4;
+  --ring: #ff7a1a;
+
+  /* Брендовый оранжевый */
+  --brand: #ff7a1a;
+  --brand-soft: #fff1e6;
+
+  /* Зелёный статус: сложность, успешные состояния */
+  --success: #6f8f2f;
+
+  /* Дополнительные уровни поверхностей */
+  --surface-1: #ffffff;
+  --surface-2: #fbf7f2;
+
+  /* Базовое скругление проекта */
+  --radius: 0.75rem;
+}
+
+.dark {
+  /* Основной тёмный фон приложения и основной текст */
+  --background: #070b0e;
+  --foreground: #f4f4f5;
+
+  /* Карточки рецептов и текст внутри карточек */
+  --card: #11161b;
+  --card-foreground: #f4f4f5;
+
+  /* Выпадающие элементы: select, menu, popover */
+  --popover: #11161b;
+  --popover-foreground: #f4f4f5;
+
+  /* Основной акцент. Оранжевый сохраняется в обеих темах */
+  --primary: #ff7a1a;
+  --primary-foreground: #111827;
+
+  /* Второстепенные элементы интерфейса */
+  --secondary: #171d22;
+  --secondary-foreground: #e5e7eb;
+
+  /* Приглушённый фон и вторичный текст */
+  --muted: #1a2026;
+  --muted-foreground: #9ca3af;
+
+  /* Мягкий акцент для бейджей и hover-состояний */
+  --accent: #28180d;
+  --accent-foreground: #ffb26b;
+
+  /* Ошибки, удаление, опасные действия */
+  --destructive: #ef4444;
+
+  /* Границы, поля ввода, focus ring */
+  --border: #273038;
+  --input: #273038;
+  --ring: #ff7a1a;
+
+  /* Брендовый оранжевый */
+  --brand: #ff7a1a;
+  --brand-soft: #28180d;
+
+  /* Зелёный статус: сложность, успешные состояния */
+  --success: #6f8f2f;
+
+  /* Дополнительные уровни поверхностей для графитового интерфейса */
+  --surface-1: #0c1115;
+  --surface-2: #111820;
+
+  /* Базовое скругление проекта */
+  --radius: 0.75rem;
+}
