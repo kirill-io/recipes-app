@@ -57,6 +57,7 @@
 }
 
 :root {
+  color-scheme: light;
   /* Основной фон приложения и основной текст */
   --background: #fffaf5;
   --foreground: #1f1f1f;
@@ -109,6 +110,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   /* Основной тёмный фон приложения и основной текст */
   --background: #070b0e;
   --foreground: #f4f4f5;
