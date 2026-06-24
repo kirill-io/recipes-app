@@ -1,6 +1,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
+  /* Шрифты */
+  --font-sans: var(--font-nunito-sans);
+
   /* Базовые цвета приложения */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
