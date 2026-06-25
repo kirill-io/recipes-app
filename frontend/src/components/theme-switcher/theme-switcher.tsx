@@ -32,7 +32,7 @@ export const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
   }, [isClient, resolvedTheme, setTheme, theme])
 
   if (!isClient) {
-    return <div className={cn('inline-flex h-6 w-11 shrink-0', className)} />
+    return <div className={cn('inline-flex h-6 w-12 shrink-0', className)} />
   }
 
   const isDark = resolvedTheme === 'dark'
@@ -40,7 +40,18 @@ export const ThemeSwitcher = ({ className }: ThemeSwitcherProps) => {
   return (
     <Switch
       checked={isDark}
-      className={cn('bg-brand-soft data-[state=checked]:bg-primary', className)}
+      className={cn(
+        'w-12 border-brand/30 bg-brand-soft/80 shadow-sm',
+        'hover:border-brand/45 hover:bg-brand-soft',
+        'data-[state=checked]:border-brand/35',
+        'data-[state=checked]:bg-surface-2',
+        '[&>span]:bg-primary',
+        '[&>span]:text-primary-foreground',
+        '[&>span]:shadow-md',
+        '[&>span[data-state=checked]]:translate-x-5.5',
+        '[&>span[data-state=checked]]:text-primary-foreground',
+        className,
+      )}
       onCheckedChange={(checked) => {
         setTheme(checked ? 'dark' : 'light')
       }}
