@@ -379,3 +379,91 @@ text-success
 }
 ```
 <!-- FRONTEND_FONTS_AND_THEME_TOOLING_STAGE_END -->
+
+<!-- FRONTEND_THEME_TOOLING_STAGE_START -->
+## Theme tooling
+
+### next-themes
+
+Для переключения темы используется пакет:
+
+```txt
+next-themes
+```
+
+Основная настройка находится в `src/app/layout.tsx` через проектный `ThemeProvider`.
+
+Тема применяется через CSS-класс на `html`, потому что Tailwind/CSS-тема проекта использует `.dark`.
+
+Ключ хранения темы:
+
+```txt
+vkusno-tut-theme
+```
+
+Тема хранится на клиенте в `localStorage`.
+
+Backend для темы не используется, потому что на текущем MVP это локальная UI-настройка пользователя.
+
+### useIsClient
+
+Для компонентов, которым нужны client-only значения, добавлен hook:
+
+```txt
+src/hooks/use-is-client.ts
+```
+
+Он использует `useSyncExternalStore` и возвращает:
+
+```txt
+false — во время серверного/первичного рендера
+true  — когда код уже безопасно выполняется на клиенте
+```
+
+Hook используется в `ThemeSwitcher`, потому что `next-themes` читает тему из client-only окружения.
+
+### cn
+
+Общая утилита `cn` хранится в:
+
+```txt
+src/lib/utils.ts
+```
+
+Она объединяет:
+
+- `clsx`;
+- `tailwind-merge`.
+
+`clsx` собирает `className` из строк, условий и объектов.
+
+`tailwind-merge` убирает конфликтующие Tailwind-классы.
+
+### components.json
+
+`components.json` должен соответствовать текущей структуре frontend:
+
+```json
+{
+  "tailwind": {
+    "css": "src/styles/globals.css"
+  },
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  }
+}
+```
+
+`src/ui` используется для низкоуровневых UI primitives.
+
+`src/components` используется для проектных компонентов:
+
+- layout;
+- recipes;
+- theme-switcher;
+- другие прикладные компоненты.
+<!-- FRONTEND_THEME_TOOLING_STAGE_END -->

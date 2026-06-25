@@ -238,3 +238,139 @@ Tailwind уже подключает свой базовый слой, а спи
 - shadcn/ui;
 - при необходимости CSS Modules.
 <!-- FRONTEND_STYLES_ARCHITECTURE_STAGE_END -->
+
+<!-- FRONTEND_THEME_ARCHITECTURE_STAGE_START -->
+## Архитектура переключения темы
+
+Для темы используется связка:
+
+- `next-themes`;
+- `ThemeProvider`;
+- CSS-класс на `html`;
+- CSS variables в `theme.css`;
+- `ThemeSwitcher`.
+
+### ThemeProvider
+
+Провайдер темы находится в:
+
+```txt
+src/providers/theme-provider.tsx
+```
+
+Он является client component и оборачивает `ThemeProvider` из `next-themes`.
+
+В `src/app/layout.tsx` приложение оборачивается в проектный `ThemeProvider`.
+
+Базовая конфигурация:
+
+```tsx
+<ThemeProvider
+  attribute="class"
+  defaultTheme="system"
+  enableSystem
+  enableColorScheme
+  disableTransitionOnChange
+  storageKey="vkusno-tut-theme"
+>
+  {children}
+</ThemeProvider>
+```
+
+`attribute="class"` нужен, потому что тёмная тема в `theme.css` описана через класс `.dark`.
+
+`defaultTheme="system"` означает, что при первом заходе тема берётся из системных настроек пользователя.
+
+`storageKey="vkusno-tut-theme"` задаёт ключ `localStorage`, где хранится выбранная тема.
+
+### CSS-тема
+
+Цвета темы описаны в:
+
+```txt
+src/styles/theme.css
+```
+
+Светлая тема находится в `:root`.
+
+Тёмная тема находится в `.dark`.
+
+Компоненты используют не прямые hex-цвета, а семантические Tailwind-классы:
+
+```txt
+bg-background
+text-foreground
+bg-card
+text-card-foreground
+border-border
+bg-primary
+```
+
+### UI primitive Switch
+
+Универсальный переключатель находится в:
+
+```txt
+src/ui/switch.tsx
+```
+
+`Switch` построен на Radix `@radix-ui/react-switch`.
+
+Он отвечает только за базовое поведение переключателя:
+
+- `checked`;
+- `unchecked`;
+- `disabled`;
+- `onCheckedChange`.
+
+`Switch` не знает ничего про тему приложения.
+
+Для кастомизации в нём есть необязательный prop:
+
+```ts
+thumbIcon?: ReactNode
+```
+
+Через него `ThemeSwitcher` передаёт иконку солнца или луны.
+
+В текущем MVP `Switch` намеренно оставлен простым:
+
+- без `data-slot`;
+- без дополнительных aria-атрибутов внутри UI primitive;
+- стили задаются через `cn()`;
+- длинные Tailwind-классы разбиваются на несколько смысловых строк.
+
+### Project component ThemeSwitcher
+
+Компонент переключения темы находится в:
+
+```txt
+src/components/theme-switcher/
+  index.ts
+  theme-switcher.tsx
+```
+
+`ThemeSwitcher` — это проектный компонент. Он знает про `next-themes` и использует:
+
+- `resolvedTheme`;
+- `setTheme`.
+
+`resolvedTheme` нужен, чтобы при `theme="system"` понимать фактическое состояние интерфейса: `light` или `dark`.
+
+Для безопасного рендера используется hook:
+
+```txt
+src/hooks/use-is-client.ts
+```
+
+Он помогает не рендерить UI, завязанный на client-only данных, до перехода в клиентское состояние.
+
+При `!isClient` компонент `ThemeSwitcher` возвращает `null`.
+
+Для MVP `ThemeSwitcher` реализован как компактный двухпозиционный switch:
+
+- `checked = true` для тёмной темы;
+- `checked = false` для светлой темы;
+- при переключении вызывается `setTheme('dark')` или `setTheme('light')`;
+- иконка `Sun` или `Moon` передаётся в `Switch` через `thumbIcon`.
+<!-- FRONTEND_THEME_ARCHITECTURE_STAGE_END -->

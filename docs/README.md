@@ -759,3 +759,48 @@ src/config/fonts.ts
 - завести базовые layout-компоненты;
 - перейти к API client, DTO и первым данным из backend.
 <!-- FRONTEND_DESIGN_SYSTEM_STAGE_END -->
+
+<!-- FRONTEND_THEME_SWITCHER_STAGE_START -->
+## Обновление: переключение темы frontend
+
+Во frontend добавлена базовая поддержка переключения светлой и тёмной темы.
+
+Сделано:
+
+- подключён `next-themes`;
+- добавлен проектный `ThemeProvider` в `src/providers/theme-provider.tsx`;
+- `ThemeProvider` подключён в `src/app/layout.tsx`;
+- тема применяется через CSS-класс на `html`: `attribute="class"`;
+- тема по умолчанию берётся из системных настроек пользователя: `defaultTheme="system"`;
+- включена поддержка системной темы через `enableSystem`;
+- включён `enableColorScheme`, чтобы браузерные элементы корректнее подстраивались под light/dark;
+- включён `disableTransitionOnChange`, чтобы при смене темы не было лишней анимации всех цветов;
+- выбор темы сохраняется в `localStorage` по ключу `vkusno-tut-theme`;
+- на `html` добавлен `suppressHydrationWarning`, потому что класс темы может отличаться между серверным HTML и клиентским состоянием;
+- добавлен универсальный UI primitive `Switch` в `src/ui/switch.tsx`;
+- добавлен проектный компонент `ThemeSwitcher` в `src/components/theme-switcher`;
+- добавлен hook `useIsClient` в `src/hooks/use-is-client.ts`;
+- `ThemeSwitcher` при `!isClient` возвращает `null`, чтобы не рендерить UI, завязанный на client-only данные;
+- `ThemeSwitcher` использует `resolvedTheme`, чтобы двухпозиционный switch показывал фактическую тему: светлую или тёмную;
+- иконка `Sun`/`Moon` передаётся внутрь универсального `Switch` через `thumbIcon`.
+
+Принята логика темы:
+
+```txt
+первый заход:
+  defaultTheme="system"
+  resolvedTheme определяет фактическую light/dark тему
+
+после ручного переключения:
+  setTheme('light') или setTheme('dark')
+  выбор сохраняется в localStorage
+
+следующие заходы:
+  если в localStorage уже есть light/dark,
+  приложение использует сохранённый выбор
+```
+
+Для MVP используется компактный двухпозиционный switch.
+
+Возможность отдельного выбора режима `system` в UI пока не добавляется.
+<!-- FRONTEND_THEME_SWITCHER_STAGE_END -->

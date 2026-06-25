@@ -754,3 +754,30 @@ Backend MVP для этого уже готов и предоставляет п
    - `GET /api/recipes`.
 8. Начать страницу каталога рецептов.
 <!-- FRONTEND_DESIGN_SYSTEM_ROADMAP_STAGE_END -->
+
+<!-- FRONTEND_THEME_SWITCHER_ROADMAP_STAGE_START -->
+## Обновление roadmap: переключение темы frontend
+
+Выполнено:
+
+- подключён `next-themes`;
+- настроен проектный `ThemeProvider`;
+- тема применяется через CSS-класс на `html`;
+- по умолчанию используется системная тема пользователя;
+- выбор `light`/`dark` сохраняется в `localStorage`;
+- добавлен универсальный UI primitive `Switch`;
+- добавлен `ThemeSwitcher` как проектный переключатель темы;
+- добавлен `useIsClient` для безопасной работы client-only UI;
+- `ThemeSwitcher` сделан компактным двухпозиционным switch с иконками `Sun`/`Moon`;
+- `Switch` и `ThemeSwitcher` используют разбивку длинных Tailwind-классов через `cn()`.
+
+Следующие задачи:
+
+1. Проверить переключение темы на временной главной странице.
+2. Перенести `ThemeSwitcher` в будущий `Header`.
+3. Добавить базовые layout-компоненты.
+4. Настроить `.env.example`.
+5. Добавить `NEXT_PUBLIC_API_URL`.
+6. Создать API client и DTO-типы.
+7. Подключить первые backend-ручки.
+<!-- FRONTEND_THEME_SWITCHER_ROADMAP_STAGE_END -->
