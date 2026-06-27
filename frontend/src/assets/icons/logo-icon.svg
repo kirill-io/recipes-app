@@ -1,0 +1,26 @@
+<svg width="250" height="216" viewBox="0 0 250 216" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Chef hat logo smooth centered">
+  <g transform="translate(0 18)" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M 82 181
+             H 168
+             Q 181 181 181 168
+             V 114
+             C 198 112 210 104 216 89
+             C 223 72 219 53 207 42
+             C 199 34 188 30 176 31
+             C 174 21 169 14 161 8
+             C 151 1 138 -3 125 -3
+             C 112 -3 99 1 89 8
+             C 81 14 76 21 74 31
+             C 62 30 51 34 43 42
+             C 31 53 27 72 34 89
+             C 40 104 52 112 69 114
+             V 168
+             Q 69 181 82 181
+             Z"/>
+    <path d="M 104 127
+             V 151
+             L 125 134
+             L 146 151
+             V 127"/>
+  </g>
+</svg>
