@@ -374,3 +374,152 @@ src/hooks/use-is-client.ts
 - при переключении вызывается `setTheme('dark')` или `setTheme('light')`;
 - иконка `Sun` или `Moon` передаётся в `Switch` через `thumbIcon`.
 <!-- FRONTEND_THEME_ARCHITECTURE_STAGE_END -->
+
+<!-- FRONTEND_HEADER_LOGO_ARCHITECTURE_STAGE_START -->
+## Header, Container и Logo
+
+### Разделение `ui`, `components`, `modules`
+
+Во frontend MVP принято разделение:
+
+```txt
+src/ui
+  Низкоуровневые UI primitives, которые не знают о предметной области:
+  button, switch, input, card.
+
+src/components
+  Небольшие переиспользуемые проектные компоненты:
+  container, icon, logo, theme-switcher.
+
+src/modules
+  Крупные зоны интерфейса приложения:
+  header, будущий catalog, recipe-detail.
+```
+
+Компоненты в `src/components` и `src/modules` хранятся по принципу “каждый компонент в своей папке”:
+
+```txt
+component-name/
+  component-name.tsx
+  index.ts
+```
+
+`index.ts` используется для barrel export и не содержит JSX.
+
+### Container
+
+`Container` — это общая обёртка для ограничения ширины и центрирования контента.
+
+Он отвечает только за:
+
+- `mx-auto`;
+- `w-full`;
+- `max-width`.
+
+На текущем этапе мобильные отступы не фиксируются в самом `Container`. Адаптивные `padding`/`margin` будут дорабатываться отдельно.
+
+`Container` используется внутри крупных секций:
+
+- `Header`;
+- main content;
+- footer, если он появится.
+
+### Header
+
+`Header` находится в:
+
+```txt
+src/modules/header
+```
+
+`Header` является крупным модулем приложения.
+
+Он содержит:
+
+- ссылку на главную страницу через логотип;
+- `Logo`;
+- `ThemeSwitcher`.
+
+Логотип обёрнут в:
+
+```tsx
+<Link href="/" />
+```
+
+Это нужно, потому что логотип в шапке должен вести на главную страницу.
+
+Нижняя линия `Header` реализуется через:
+
+```txt
+border-b border-border
+```
+
+Цвет `border-border` берётся из CSS theme tokens и меняется между light/dark темами.
+
+### Logo
+
+`Logo` находится в:
+
+```txt
+src/components/logo
+```
+
+Логотип состоит из двух частей:
+
+- SVG icon;
+- текст `ВкусноТут`.
+
+Текст не зашивается внутрь SVG.
+
+Это позволяет:
+
+- менять цвет текста через тему;
+- управлять шрифтом через `font-logo`;
+- скрывать текст при необходимости;
+- отдельно менять размер SVG-иконки;
+- использовать SVG-иконку без текста.
+
+Компонент `Logo` поддерживает:
+
+- `withText`;
+- `iconClassName`;
+- `textClassName`;
+- `className`.
+
+Назначение props:
+
+- `className` управляет корневой обёрткой;
+- `iconClassName` управляет размером и цветом SVG-иконки;
+- `textClassName` управляет текстом логотипа;
+- `withText` включает или выключает текстовую часть логотипа.
+
+### Icon
+
+`Icon` находится в:
+
+```txt
+src/components/icon
+```
+
+Он принимает SVG-компонент и рендерит его внутри общей обёртки.
+
+Такой подход позволяет единообразно управлять размерами и цветами кастомных SVG.
+
+Пример использования по смыслу:
+
+```tsx
+<Icon icon={LogoIcon} className="size-9 text-brand" />
+```
+
+SVG должен использовать `currentColor`, чтобы цвет можно было задавать через Tailwind:
+
+```svg
+stroke="currentColor"
+```
+
+или:
+
+```svg
+fill="currentColor"
+```
+<!-- FRONTEND_HEADER_LOGO_ARCHITECTURE_STAGE_END -->

@@ -467,3 +467,108 @@ src/lib/utils.ts
 - theme-switcher;
 - другие прикладные компоненты.
 <!-- FRONTEND_THEME_TOOLING_STAGE_END -->
+
+<!-- FRONTEND_SVG_LOGO_TOOLING_STAGE_START -->
+## SVG icons и SVGR
+
+Для кастомных SVG-иконок используется SVGR.
+
+Установлена dev-зависимость:
+
+```txt
+@svgr/webpack
+```
+
+SVG-иконки, которыми нужно управлять из React, хранятся в:
+
+```txt
+src/assets/icons
+```
+
+Они импортируются как React-компоненты:
+
+```ts
+import LogoIcon from '@/assets/icons/logo-icon.svg'
+```
+
+Для работы TypeScript добавлена декларация для:
+
+```txt
+*.svg
+```
+
+SVG, которые должны управляться через тему, должны использовать:
+
+```svg
+stroke="currentColor"
+```
+
+или:
+
+```svg
+fill="currentColor"
+```
+
+Цвет задаётся снаружи через Tailwind-классы:
+
+- `text-brand`;
+- `text-foreground`;
+- `text-logo-foreground`.
+
+Файлы из `public` не используются для управляемых UI-иконок, потому что при подключении через `img` или `next/image` внешний `text-brand` не управляет внутренним `currentColor` SVG.
+
+`public` позже можно использовать для статических ассетов:
+
+- `favicon`;
+- `manifest icons`;
+- `og-image`;
+- изображения, цвет которых не должен управляться из React.
+
+### Next config
+
+В `next.config.ts` добавлено правило для обработки SVG через:
+
+```txt
+@svgr/webpack
+```
+
+После изменения `next.config.ts` dev-сервер нужно перезапускать полностью.
+
+### Logo font
+
+Для текста логотипа добавлен отдельный Google Font через:
+
+```txt
+next/font/google
+```
+
+Основной интерфейсный шрифт остаётся `Nunito Sans`.
+
+Логотип использует отдельный token:
+
+```txt
+--font-logo
+```
+
+В Tailwind используется класс:
+
+```txt
+font-logo
+```
+
+### Logo foreground color
+
+Для текста логотипа добавлен отдельный цветовой token:
+
+```css
+--color-logo-foreground: var(--logo-foreground);
+```
+
+В компоненте используется класс:
+
+```txt
+text-logo-foreground
+```
+
+Это позволяет настраивать цвет текста логотипа отдельно от основного `text-foreground`.
+<!-- FRONTEND_SVG_LOGO_TOOLING_STAGE_END -->
